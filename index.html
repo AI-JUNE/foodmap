@@ -9,6 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href='data:application/manifest+json,{"name":"강원랜드 프로젝트 맛집 지도","short_name":"맛집지도","start_url":"./","display":"standalone","background_color":"%23FEE500","theme_color":"%23FEE500","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%23FEE500%27/%3E%3Cpath d=%27M32 10c-9.4 0-17 7.2-17 16.1 0 5.6 3 10.5 7.5 13.4L20 49l10.6-6.4c.5 0 .9.1 1.4.1 9.4 0 17-7.2 17-16.1S41.4 10 32 10z%27 fill=%27%233C1E1E%27/%3E%3C/svg%3E","sizes":"any","type":"image/svg+xml"}]}'>
 <title>강원랜드 프로젝트 맛집 지도</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23FEE500'/%3E%3Cpath d='M32 10c-9.4 0-17 7.2-17 16.1 0 5.6 3 10.5 7.5 13.4L20 49l10.6-6.4c.5 0 .9.1 1.4.1 9.4 0 17-7.2 17-16.1S41.4 10 32 10z' fill='%233C1E1E'/%3E%3Cpath d='M32 19l2.6 5.6 6.1.8-4.5 4.3 1.1 6.1L32 33l-5.3 2.8 1.1-6.1-4.5-4.3 6.1-.8z' fill='%23FEE500'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23FEE500'/%3E%3Cpath d='M32 10c-9.4 0-17 7.2-17 16.1 0 5.6 3 10.5 7.5 13.4L20 49l10.6-6.4c.5 0 .9.1 1.4.1 9.4 0 17-7.2 17-16.1S41.4 10 32 10z' fill='%233C1E1E'/%3E%3Cpath d='M32 19l2.6 5.6 6.1.8-4.5 4.3 1.1 6.1L32 33l-5.3 2.8 1.1-6.1-4.5-4.3 6.1-.8z' fill='%23FEE500'/%3E%3C/svg%3E">
@@ -144,6 +145,7 @@ a{color:inherit;text-decoration:none}
 .btn.dark{background:var(--ink);color:#fff}.btn.line{background:#fff;border:1px solid var(--line2)}.btn.sm{padding:9px 12px;font-size:13px;border-radius:10px;white-space:nowrap}
 .btn.danger{color:var(--meat);border:1px solid #F6CFC6;background:#fff;margin-right:auto}
 .btn:disabled{opacity:.5}
+.btn svg{width:16px;height:16px;vertical-align:-3px}
 .f{padding:14px 18px;display:grid;gap:6px}
 .f label{font-size:13px;color:var(--sub);font-weight:700;display:block;margin-bottom:4px}
 .f .hint{font-size:13px;color:var(--mute);margin-bottom:10px}
@@ -173,6 +175,74 @@ a{color:inherit;text-decoration:none}
   .fab{bottom:24px!important;right:24px}.locbtn{bottom:24px!important;left:auto;right:90px}
   .leaflet-control-zoom{display:block}
 }
+
+/* ===== v3 additions ===== */
+.tabbar{position:absolute;left:0;right:0;bottom:0;z-index:15;height:calc(58px + var(--bot));padding-bottom:var(--bot);background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr)}
+.tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10.5px;font-weight:700;color:var(--mute);position:relative}
+.tabbar button svg{width:23px;height:23px}
+.tabbar button.on{color:var(--ink)}
+.tabbar .dotn{position:absolute;top:8px;right:calc(50% - 16px);width:7px;height:7px;border-radius:50%;background:var(--meat)}
+.sheet{bottom:calc(58px + var(--bot))}
+.fab,.locbtn{margin-bottom:calc(58px + var(--bot))}
+.view{position:absolute;inset:0;bottom:calc(58px + var(--bot));z-index:12;background:var(--bg);display:flex;flex-direction:column}
+.vhead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(14px + var(--top)) 16px 10px;background:#fff;border-bottom:1px solid var(--line)}
+.vhead h2{margin:0;font-size:20px;font-weight:800;letter-spacing:-.02em}
+.vhead .ver{font-size:11.5px;color:var(--mute)}
+.seg{display:flex;background:var(--bg);border-radius:10px;padding:3px}
+.seg button{padding:6px 12px;border-radius:8px;font-size:12.5px;font-weight:700;color:var(--sub);white-space:nowrap}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.view .chips{background:#fff;border-bottom:1px solid var(--line)}
+.vbody{flex:1;overflow-y:auto;padding:12px 12px 20px;-webkit-overflow-scrolling:touch}
+.heart{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#C9C9C9;flex:none;align-self:center}
+.heart svg{width:20px;height:20px}
+.heart.on{color:var(--meat)}
+.heart.ic{background:rgba(60,30,30,.06)}
+.st{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;flex:none}
+.st.open{background:#E6F6EC;color:#1E7A43}.st.soon{background:#FFF1E0;color:#B85C00}.st.closed{background:#F1F2F4;color:var(--mute)}.st.off{background:#FDECEA;color:#B3261E}
+.tags{display:flex;gap:4px;flex-wrap:nowrap;overflow:hidden}
+.tags span{font-size:11px;color:#3A7BD5;background:#EAF2FD;padding:1px 6px;border-radius:6px;white-space:nowrap;flex:none}
+.chip.tg{background:#EAF2FD;color:#3A7BD5;border-color:transparent}.chip.tg.on{background:#3A7BD5;color:#fff}
+.tagrow{padding-top:0}
+.tagpick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.rk.r1{background:#FFB400;color:#3C1E1E}.rk.r2{background:#B8BEC4;color:#191919}.rk.r3{background:#C98A55;color:#fff}
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:8px;align-items:end;margin:4px 0 14px}
+.pod{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px 8px 10px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px}
+.pod.p1{padding-top:16px;border-color:#FFD966;background:linear-gradient(#FFFBE6,#fff)}
+.pod.empty{visibility:hidden}
+.pod .md{line-height:1}
+.mdl{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;font-size:13px;font-weight:800;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.mdl.m1{background:linear-gradient(135deg,#FFD24D,#E5A100);color:#3C1E1E}.mdl.m2{background:linear-gradient(135deg,#D9DEE3,#9AA3AB)}.mdl.m3{background:linear-gradient(135deg,#D9A06E,#A8683A)}
+.pod .ico{width:46px;height:46px;border-radius:14px}.pod.p1 .ico{width:56px;height:56px}
+.pod .nm{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pod .sc{font-size:13px;font-weight:800;color:var(--star)}.pod .sc small{color:var(--mute);font-weight:500}
+.pickbox{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;margin-top:4px}
+.cond{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.slot{height:64px;border-radius:14px;background:var(--bg);display:grid;place-items:center;font-size:20px;font-weight:800;margin-bottom:12px;color:var(--mute);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 12px}
+.slot.roll{color:var(--ink);animation:blink .09s infinite}
+.slot.done{color:var(--brown);background:var(--kakao);animation:pop .3s}
+@keyframes blink{50%{opacity:.5}}@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+.btn.big{font-size:17px;padding:15px}
+.pickres{margin-top:12px}
+.row2{display:flex;gap:8px}.row2 .btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px}.row2 svg{width:16px;height:16px}
+.mycard{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;margin-top:4px}
+.av.big{width:52px;height:52px;border-radius:50%;background:var(--kakao);color:var(--brown);font-weight:800;font-size:20px;display:grid;place-items:center;flex:none}
+.mi{flex:1;min-width:0}.mi input{width:100%;border:none;border-bottom:2px solid var(--line2);font-size:17px;font-weight:800;padding:4px 0;outline:none;background:transparent}.mi input:focus{border-color:var(--ink)}
+.mi small{color:var(--mute);font-size:11.5px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 4px}
+.stats div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.stats b{display:block;font-size:20px;font-weight:800}.stats span{font-size:11.5px;color:var(--mute)}
+.sect2{font-size:14px;font-weight:800;margin:16px 2px 8px}
+.myrv{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;cursor:pointer;font-size:13px}
+.myrv b{font-size:14px;margin-right:6px}.myrv .st{color:var(--star);background:none;padding:0;font-size:12px}
+.myrv .bb{background:var(--bubble);padding:6px 10px;border-radius:0 12px 12px 12px;margin-top:6px;display:inline-block}
+.myrv time{display:block;color:var(--mute);font-size:11px;margin-top:4px}
+.info>div .btn{align-self:center;margin-left:auto}
+@media(min-width:820px){
+  .tabbar{left:0;right:auto;width:440px}
+  .view{left:0;right:auto;width:440px;box-shadow:4px 0 24px rgba(0,0,0,.08)}
+  .fab,.locbtn{margin-bottom:0}
+  .tab-rank .top,.tab-pick .top,.tab-my .top{display:none}
+}
 </style>
 </head>
 <body>
@@ -182,7 +252,7 @@ a{color:inherit;text-decoration:none}
 const SUPABASE_URL  = "https://jcwqolnyzrbosuqlqfjh.supabase.co";
 const SUPABASE_ANON = "sb_publishable_OEnp8Wv8WQD9nm162iVBaw_MOcqnIVo";
 const HOME = {name:"강원랜드 인재개발센터", lat:37.2002, lng:128.8555};
-const APP_VERSION="202609101455"; // 올리기.bat 이 자동으로 갱신
+const APP_VERSION="202609101504"; // 올리기.bat 이 자동으로 갱신
 /* ================================================ */
 const {useState,useEffect,useRef,useMemo,useCallback}=React;
 const CATS={meat:["고기·구이","고기"],rice:["밥·한식","밥"],noodle:["면·분식","면"],cafe:["카페·디저트","카페"],bar:["술·안주","술"],etc:["기타","기타"]};
@@ -224,6 +294,7 @@ const DB=demo?{
 const located=p=>!!(p&&p.lat&&p.lng);
 const dist=(a,b)=>{const R=6371,dLat=(b.lat-a.lat)*Math.PI/180,dLng=(b.lng-a.lng)*Math.PI/180,x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(x));};
 const fmtDist=k=>k<1?`${Math.round(k*1000)}m · 도보 ${Math.max(1,Math.round(k*1000/75))}분`:`${k.toFixed(1)}km · 차 ${Math.max(2,Math.round(k*2.2))}분`;
+const fmtDistS=k=>k<1?`${Math.round(k*1000)}m·${Math.max(1,Math.round(k*1000/75))}분`:`${k.toFixed(1)}km·차${Math.max(2,Math.round(k*2.2))}분`;
 const starStr=v=>{const f=Math.round(v);return "★".repeat(f)+"☆".repeat(5-f);};
 const ago=t=>{const d=(Date.now()-new Date(t))/6e4;if(d<60)return Math.max(1,Math.round(d))+"분 전";if(d<1440)return Math.round(d/60)+"시간 전";if(d<43200)return Math.round(d/1440)+"일 전";return new Date(t).toLocaleDateString("ko-KR");};
 const memoText=p=>(p.memo||"").split("\n").filter(l=>!/^https?:\/\//.test(l)).join(" ");
@@ -270,33 +341,68 @@ const I={
 };
 const SORTS=[["dist","가까운 순"],["rating","별점 높은 순"],["reviews","평가 많은 순"],["new","최근 등록 순"]];
 
+/* ---------- local prefs (기기 저장) ---------- */
+const LS={get:(k,d)=>{try{const v=localStorage.getItem("fm_"+k);return v?JSON.parse(v):d;}catch{return d;}},set:(k,v)=>{try{localStorage.setItem("fm_"+k,JSON.stringify(v));}catch{}}};
+const TAGS=["회식","혼밥","주차","예약필수","아침","야식","포장","가성비","단체룸"];
+const tagsOf=p=>((p.memo||"").match(/#[^\s#]+/g)||[]).map(t=>t.slice(1));
+const memoPlain=p=>memoText(p).replace(/#[^\s#]+/g,"").replace(/\s+/g," ").trim();
+/* 초성 검색 */
+const CHO=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+const chosung=str=>[...str].map(c=>{const code=c.charCodeAt(0)-0xAC00;return code>=0&&code<11172?CHO[Math.floor(code/588)]:c;}).join("");
+const isChoQuery=q=>/^[ㄱ-ㅎ\s]+$/.test(q);
+const matchQ=(text,q)=>{const t=(text||"").toLowerCase();if(isChoQuery(q))return chosung(t).includes(q.replace(/\s/g,""));return t.includes(q);};
+/* 영업 상태 */
+const DAYS="일월화수목금토";
+function openStatus(hours){
+  if(!hours)return null;const now=new Date();const day=DAYS[now.getDay()];
+  const off=hours.match(/([일월화수목금토])\s*(요일)?\s*휴무/);if(off&&off[1]===day)return{k:"off",t:"오늘 휴무"};
+  const m=hours.match(/(\d{1,2}):(\d{2})\s*[–~\-]\s*(\d{1,2}):(\d{2})/);if(!m)return null;
+  const cur=now.getHours()*60+now.getMinutes();let a=+m[1]*60+ +m[2],b=+m[3]*60+ +m[4];
+  const open=b>a?(cur>=a&&cur<b):(cur>=a||cur<b);
+  if(open){const left=(b-cur+1440)%1440;return left<=60?{k:"soon",t:"곧 마감"}:{k:"open",t:"영업중"};}
+  return cur<a?{k:"closed",t:"오픈 전"}:{k:"closed",t:"영업 종료"};
+}
+const Status=({p})=>{const s=openStatus(p.hours);return s?<span className={"st "+s.k}>{s.t}</span>:null;};
+const Heart=({on,onClick,cls})=><button className={"heart "+(on?"on":"")+(cls?" "+cls:"")} onClick={e=>{e.stopPropagation();onClick();}} aria-label="즐겨찾기"><svg viewBox="0 0 24 24" fill={on?"currentColor":"none"} stroke="currentColor" strokeWidth="2"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 7.9 3.6 4.5 7 4.5c2 0 3.5 1.1 5 3 1.5-1.9 3-3 5-3 3.4 0 5.6 3.4 4.3 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/></svg></button>;
+const TabIcon={
+  map:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"/></svg>,
+  rank:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg>,
+  pick:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="9" cy="15" r="1.2" fill="currentColor"/></svg>,
+  my:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>
+};
+
 function App(){
   const [places,setPlaces]=useState([]);const [reviews,setReviews]=useState([]);
   const [status,setStatus]=useState("loading");
+  const [tab,setTab]=useState("map");
   const [q,setQ]=useState("");const [cat,setCat]=useState("all");
-  const [minStar,setMinStar]=useState(0);const [walk,setWalk]=useState(false);const [rated,setRated]=useState(false);
-  const [sort,setSort]=useState("dist");
+  const [minStar,setMinStar]=useState(0);const [walk,setWalk]=useState(false);const [rated,setRated]=useState(false);const [openNow,setOpenNow]=useState(false);
+  const [tag,setTag]=useState("");const [showTags,setShowTags]=useState(false);
+  const [sort,setSort]=useState(LS.get("sort","dist"));
   const [active,setActive]=useState(null);const [detail,setDetail]=useState(null);const [form,setForm]=useState(null);
   const [snap,setSnap]=useState("half");
   const [toast,setToast]=useState("");const tRef=useRef();
   const say=useCallback(m=>{setToast(m);clearTimeout(tRef.current);tRef.current=setTimeout(()=>setToast(""),1800);},[]);
-  const [me,setMe]=useState("");
+  const [me,setMeS]=useState(LS.get("me",""));const setMe=v=>{setMeS(v);LS.set("me",v);};
+  const [favs,setFavsS]=useState(LS.get("favs",[]));const toggleFav=id=>{setFavsS(f=>{const n=f.includes(id)?f.filter(x=>x!==id):[...f,id];LS.set("favs",n);say(f.includes(id)?"즐겨찾기 해제":"즐겨찾기 추가 ♥");return n;});};
+  useEffect(()=>LS.set("sort",sort),[sort]);
 
   const [newVer,setNewVer]=useState("");
   useEffect(()=>{const chk=async()=>{try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VERSION="(\d+)"/);if(m&&m[1]>APP_VERSION)setNewVer(m[1]);}catch{}};chk();const id=setInterval(chk,5*60*1000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)chk();});return()=>clearInterval(id);},[]);
-  const load=useCallback(async()=>{try{const{p,r}=await DB.load();setPlaces(p);setReviews(r);setStatus(demo?"demo":"ok");}catch(e){setStatus("fail");say("DB 연결 실패: "+e.message.slice(0,50));}},[say]);
-  useEffect(()=>{load();},[load]);
+  const load=useCallback(async(quiet)=>{try{const{p,r}=await DB.load();setPlaces(p);setReviews(r);setStatus(demo?"demo":"ok");}catch(e){if(!quiet){setStatus("fail");say("DB 연결 실패: "+e.message.slice(0,50));}}},[say]);
+  useEffect(()=>{load();const id=setInterval(()=>{if(!document.hidden)load(true);},60*1000);const vis=()=>{if(!document.hidden)load(true);};document.addEventListener("visibilitychange",vis);return()=>{clearInterval(id);document.removeEventListener("visibilitychange",vis);};},[load]);
 
   const stats=useMemo(()=>{const m={};reviews.forEach(r=>{(m[r.place_id]=m[r.place_id]||[]).push(r);});return m;},[reviews]);
-  const enriched=useMemo(()=>places.map(p=>{const rs=stats[p.id]||[];const n=rs.length;const avg=n?rs.reduce((s,r)=>s+r.rating,0)/n:0;return{...p,_n:n,_avg:avg,_d:located(p)?dist(HOME,p):Infinity,_rs:rs};}),[places,stats]);
+  const enriched=useMemo(()=>places.map(p=>{const rs=stats[p.id]||[];const n=rs.length;const avg=n?rs.reduce((s,r)=>s+r.rating,0)/n:0;return{...p,_n:n,_avg:avg,_d:located(p)?dist(HOME,p):Infinity,_rs:rs,_tags:tagsOf(p),_open:openStatus(p.hours)};}),[places,stats]);
   const list=useMemo(()=>{
     const s=q.trim().toLowerCase();
-    let arr=enriched.filter(p=>(cat==="all"||p.category===cat)&&(!minStar||p._avg>=minStar)&&(!walk||p._d<=1.1)&&(!rated||p._n>0)&&(!s||[p.name,p.menu,p.memo,p.address,p._rs.map(r=>r.comment).join(" ")].join(" ").toLowerCase().includes(s)));
+    let arr=enriched.filter(p=>(cat==="all"||p.category===cat)&&(!minStar||p._avg>=minStar)&&(!walk||p._d<=1.1)&&(!rated||p._n>0)&&(!openNow||p._open?.k==="open"||p._open?.k==="soon")&&(!tag||p._tags.includes(tag))&&(!s||matchQ([p.name,p.menu,p.memo,p.address,p._rs.map(r=>r.comment).join(" ")].join(" "),s)));
     const by={dist:(a,b)=>a._d-b._d,rating:(a,b)=>b._avg-a._avg||b._n-a._n||a._d-b._d,reviews:(a,b)=>b._n-a._n||b._avg-a._avg,new:(a,b)=>new Date(b.created_at)-new Date(a.created_at)};
     return arr.sort(by[sort]);
-  },[enriched,q,cat,minStar,walk,rated,sort]);
+  },[enriched,q,cat,minStar,walk,rated,openNow,tag,sort]);
   const activeP=enriched.find(p=>p.id===active);
   const detailP=enriched.find(p=>p.id===detail);
+  const filtersOn=minStar||rated||walk||openNow||tag||cat!=="all"||q;
 
   const mapRef=useRef(null),mapObj=useRef(null),clusterRef=useRef(null);
   useEffect(()=>{
@@ -308,32 +414,28 @@ function App(){
     mapObj.current=map;setTimeout(()=>map.invalidateSize(),100);
     return()=>map.remove();
   },[]);
-  useEffect(()=>{
-    const c=clusterRef.current;if(!c)return;c.clearLayers();
-    list.filter(located).forEach(p=>{
-      const m=L.marker([p.lat,p.lng],{icon:pinIcon(p.category,p.id===active,p._avg),zIndexOffset:p.id===active?500:0});
-      m.on("click",()=>{setActive(p.id);setSnap("peek");});
-      c.addLayer(m);
-    });
+  useEffect(()=>{const c=clusterRef.current;if(!c)return;c.clearLayers();
+    list.filter(located).forEach(p=>{const m=L.marker([p.lat,p.lng],{icon:pinIcon(p.category,p.id===active,p._avg),zIndexOffset:p.id===active?500:0});m.on("click",()=>{setActive(p.id);setSnap("peek");});c.addLayer(m);});
   },[list,active]);
   useEffect(()=>{if(activeP&&located(activeP)&&mapObj.current)mapObj.current.flyTo([activeP.lat,activeP.lng],16,{duration:.5});},[active]);
+  useEffect(()=>{if(tab==="map")setTimeout(()=>mapObj.current?.invalidateSize(),50);},[tab]);
   const myLoc=()=>{if(!navigator.geolocation)return say("위치를 지원하지 않는 기기예요");navigator.geolocation.getCurrentPosition(g=>{mapObj.current.flyTo([g.coords.latitude,g.coords.longitude],16);},()=>say("위치 권한을 허용해주세요"));};
 
   const sheetRef=useRef(null);const drag=useRef(null);
-  const vh=window.innerHeight;
-  const heights={peek:150,half:Math.round(vh*0.48),full:vh-150};
+  const vh=window.innerHeight;const heights={peek:150,half:Math.round(vh*0.46),full:vh-150};
   const onDown=e=>{const y=e.touches?e.touches[0].clientY:e.clientY;drag.current={y0:y,h0:sheetRef.current.offsetHeight,moved:false};sheetRef.current.classList.add("drag");};
   const onMove=e=>{if(!drag.current)return;const y=e.touches?e.touches[0].clientY:e.clientY;const h=Math.min(heights.full,Math.max(100,drag.current.h0-(y-drag.current.y0)));if(Math.abs(y-drag.current.y0)>4)drag.current.moved=true;sheetRef.current.style.height=h+"px";};
   const onUp=()=>{if(!drag.current)return;sheetRef.current.classList.remove("drag");const h=sheetRef.current.offsetHeight;sheetRef.current.style.height="";
-    if(!drag.current.moved)setSnap(s=>s==="peek"?"half":s==="half"?"full":"peek");
-    else setSnap(h<heights.peek+80?"peek":h<(heights.half+heights.full)/2?"half":"full");drag.current=null;};
+    if(!drag.current.moved)setSnap(s=>s==="peek"?"half":s==="half"?"full":"peek");else setSnap(h<heights.peek+80?"peek":h<(heights.half+heights.full)/2?"half":"full");drag.current=null;};
   const sheetH=heights[snap];
-
   const openDetail=id=>{setDetail(id);setActive(id);};
   const after=async(msg)=>{await load();if(msg)say(msg);};
+  const goMap=p=>{setTab("map");setActive(p.id);setSnap("peek");};
+  const cardProps={favs,toggleFav,openDetail};
 
-  return <div className="app">
+  return <div className={"app tab-"+tab}>
     <div id="map" ref={mapRef}/>
+    {tab==="map"&&<>
     <div className="top">
       <div className="bar">
         <div className="logo"><svg viewBox="0 0 64 64"><path d="M32 8c-11 0-20 8.4-20 18.8 0 6.5 3.5 12.2 8.8 15.6L18 54l12.4-7.5c.5 0 1.1.1 1.6.1 11 0 20-8.4 20-18.8S43 8 32 8z" fill="#FEE500"/><path d="M32 18l3 6.5 7.1.9-5.2 5 1.3 7.1L32 34l-6.2 3.5 1.3-7.1-5.2-5 7.1-.9z" fill="#3C1E1E"/></svg></div>
@@ -341,51 +443,116 @@ function App(){
         <i className={"status "+(status==="ok"?"":"demo")} title={status==="ok"?"공유 중":status==="demo"?"데모 모드":"연결 실패"}/>
         <button className="ic" onClick={()=>after("새로고침")} aria-label="새로고침">{I.refresh}</button>
       </div>
-      <div className="search">{I.search}<input type="search" placeholder="식당, 메뉴, 한줄평 검색" value={q} onChange={e=>setQ(e.target.value)}/>{q&&<button className="ic" style={{width:28,height:28}} onClick={()=>setQ("")}>{I.close}</button>}</div>
+      <div className="search">{I.search}<input type="search" placeholder="식당, 메뉴, 한줄평 · 초성(ㅎㅂㅅ)도 돼요" value={q} onChange={e=>setQ(e.target.value)}/>{q&&<button className="ic" style={{width:28,height:28}} onClick={()=>setQ("")}>{I.close}</button>}</div>
       <div className="chips">
-        <button className={"chip star "+(minStar?"on":"")} onClick={()=>setMinStar(s=>s===0?4:s===4?4.5:0)}>{I.star}{minStar?`${minStar}점 이상`:"별점 필터"}</button>
-        <button className={"chip "+(rated?"on":"")} onClick={()=>setRated(v=>!v)}>{I.chat}평가 있음</button>
+        <button className={"chip star "+(minStar?"on":"")} onClick={()=>setMinStar(s=>s===0?4:s===4?4.5:0)}>{I.star}{minStar?`${minStar}점 이상`:"별점"}</button>
+        <button className={"chip "+(openNow?"on":"")} onClick={()=>setOpenNow(v=>!v)}>{I.clock}영업중</button>
         <button className={"chip "+(walk?"on":"")} onClick={()=>setWalk(v=>!v)}>{I.walk}도보 15분</button>
+        <button className={"chip "+(tag||showTags?"on":"")} onClick={()=>setShowTags(v=>!v)}>#{tag||"태그"}</button>
+        <button className={"chip "+(rated?"on":"")} onClick={()=>setRated(v=>!v)}>{I.chat}평가 있음</button>
         {Object.entries(CATS).map(([k,[n]])=><button key={k} className={"chip "+(cat===k?"on":"")} onClick={()=>setCat(cat===k?"all":k)} style={cat===k?{background:COLORS[k],borderColor:COLORS[k]}:{}}><CatSvg k={k} style={{color:cat===k?"#fff":COLORS[k]}}/>{n}</button>)}
-        {(minStar||rated||walk||cat!=="all"||q)&&<button className="chip reset" onClick={()=>{setMinStar(0);setRated(false);setWalk(false);setCat("all");setQ("");}}>{I.x}초기화</button>}
+        {filtersOn&&<button className="chip reset" onClick={()=>{setMinStar(0);setRated(false);setWalk(false);setOpenNow(false);setTag("");setCat("all");setQ("");}}>{I.x}초기화</button>}
       </div>
+      {showTags&&<div className="chips tagrow">{TAGS.map(t=><button key={t} className={"chip tg "+(tag===t?"on":"")} onClick={()=>{setTag(tag===t?"":t);}}>#{t}</button>)}</div>}
     </div>
-
     <button className="locbtn" style={{bottom:sheetH+14}} onClick={myLoc} aria-label="내 위치">{I.target}</button>
     <button className="fab" style={{bottom:sheetH+14}} onClick={()=>setForm({})} aria-label="맛집 등록">{I.plus}</button>
-
     <div className="sheet" ref={sheetRef} style={{height:sheetH}}>
       <div className="grab" onTouchStart={onDown} onTouchMove={onMove} onTouchEnd={onUp} onMouseDown={onDown} onMouseMove={e=>e.buttons&&onMove(e)} onMouseUp={onUp} onMouseLeave={onUp}><i/></div>
-      <div className="shead"><span className="sub"><b>{list.length}</b>곳{cat!=="all"?` · ${CATS[cat][0]}`:""}{minStar?` · ★${minStar}+`:""}{walk?" · 도보권":""}</span>
+      <div className="shead"><span className="sub"><b>{list.length}</b>곳{cat!=="all"?` · ${CATS[cat][0]}`:""}{minStar?` · ★${minStar}+`:""}{walk?" · 도보권":""}{tag?` · #${tag}`:""}</span>
         <label className="sortsel">{I.sort}{SORTS.find(s=>s[0]===sort)[1]}{I.down}<select value={sort} onChange={e=>setSort(e.target.value)} aria-label="정렬">{SORTS.map(([k,n])=><option key={k} value={k}>{n}</option>)}</select></label></div>
       <div className="list">
-        {snap==="peek"&&(activeP?<Card p={activeP} active onClick={()=>openDetail(activeP.id)}/>:<div className="empty" style={{padding:"8px 0"}}>핀을 누르거나 위로 끌어올려 목록 보기</div>)}
+        {snap==="peek"&&(activeP?<Card p={activeP} active {...cardProps}/>:<div className="empty" style={{padding:"8px 0"}}>핀을 누르거나 위로 끌어올려 목록 보기</div>)}
         {snap!=="peek"&&status==="loading"&&[0,1,2,3].map(i=><div key={i} className="skel"/>)}
-        {snap!=="peek"&&status!=="loading"&&(list.length?list.map((p,i)=><Card key={p.id} p={p} rank={sort==="rating"&&p._n?i+1:0} active={p.id===active} onClick={()=>openDetail(p.id)}/>):<div className="empty"><div className="em">🍽️</div>조건에 맞는 곳이 없어요.<br/>필터를 풀거나 새로 등록해보세요.</div>)}
+        {snap!=="peek"&&status!=="loading"&&(list.length?list.map((p,i)=><Card key={p.id} p={p} rank={sort==="rating"&&p._n?i+1:0} active={p.id===active} {...cardProps}/>):<div className="empty"><div className="em">🍽️</div>조건에 맞는 곳이 없어요.<br/>필터를 풀거나 새로 등록해보세요.</div>)}
       </div>
     </div>
+    </>}
+    {tab==="rank"&&<RankView list={enriched} cat={cat} setCat={setCat} {...cardProps}/>}
+    {tab==="pick"&&<PickView list={enriched} {...cardProps} say={say} goMap={goMap}/>}
+    {tab==="my"&&<MyView list={enriched} reviews={reviews} me={me} setMe={setMe} favs={favs} {...cardProps} status={status} after={after}/>}
 
-    <Detail p={detailP} onClose={()=>setDetail(null)} onEdit={()=>setForm(detailP)} me={me} setMe={setMe} after={after} say={say}/>
+    <nav className="tabbar">{[["map","지도"],["rank","랭킹"],["pick","뽑기"],["my","MY"]].map(([k,n])=><button key={k} className={tab===k?"on":""} onClick={()=>{setTab(k);setDetail(null);}}>{TabIcon[k]}<span>{n}</span>{k==="my"&&favs.length>0&&<i className="dotn"/>}</button>)}</nav>
+
+    <Detail p={detailP} onClose={()=>setDetail(null)} onEdit={()=>setForm(detailP)} me={me} setMe={setMe} after={after} say={say} fav={favs.includes(detail)} toggleFav={()=>toggleFav(detail)} goMap={goMap}/>
     <Form init={form} onClose={()=>setForm(null)} me={me} setMe={setMe} after={after} say={say} onSaved={id=>{setForm(null);setDetail(id);setActive(id);}} mapCenter={()=>mapObj.current?.getCenter()}/>
     <div className={"toast "+(toast?"show":"")}>{toast}</div>
     {newVer&&<button className="upd" onClick={()=>{location.replace(location.pathname+"?v="+newVer);}}>{I.refresh}새 버전이 있어요 · 눌러서 업데이트</button>}
   </div>;
 }
 
-function Card({p,active,onClick,rank}){
+function Card({p,active,rank,favs,toggleFav,openDetail,compact}){
   const [imgErr,setImgErr]=useState(false);const col=COLORS[p.category]||COLORS.etc;
-  return <div className={"card "+(active?"active":"")} onClick={onClick}>
-    <div className="ico" style={{background:col}}>{p.image_url&&!imgErr?<img src={p.image_url} alt="" loading="lazy" onError={()=>setImgErr(true)}/>:<CatSvg k={p.category}/>}{rank>0&&rank<=3&&<span className="rk">{rank}위</span>}</div>
+  return <div className={"card "+(active?"active":"")} onClick={()=>openDetail(p.id)}>
+    <div className="ico" style={{background:col}}>{p.image_url&&!imgErr?<img src={p.image_url} alt="" loading="lazy" onError={()=>setImgErr(true)}/>:<CatSvg k={p.category}/>}{rank>0&&rank<=3&&<span className={"rk r"+rank}>{rank}위</span>}</div>
     <div className="bd">
       <h3>{p.name}</h3>
-      <div className="menu"><b style={{color:col}}>{CATS[p.category]?.[0]||"기타"}</b>{p.menu?` · ${p.menu}`:memoText(p)?` · ${memoText(p)}`:""}</div>
-      <div className="rate">{p._n?<><span className="s">★ {p._avg.toFixed(1)}</span><span className="n">({p._n})</span></>:<span className="tag">평가 없음</span>}<span className="d">{located(p)?fmtDist(p._d):"위치 미지정"}</span></div>
+      <div className="menu"><b style={{color:col}}>{CATS[p.category]?.[0]||"기타"}</b>{p.menu?` · ${p.menu}`:memoPlain(p)?` · ${memoPlain(p)}`:""}</div>
+      <div className="rate">{p._n?<><span className="s">★ {p._avg.toFixed(1)}</span><span className="n">({p._n})</span></>:<span className="tag">평가 없음</span>}<span className="d">{located(p)?fmtDistS(p._d):"위치 미지정"}</span><Status p={p}/></div>
+      {p._tags.length>0&&<div className="tags">{p._tags.slice(0,4).map(t=><span key={t}>#{t}</span>)}</div>}
     </div>
-    <span className="arrow">{I.chev}</span>
+    <Heart on={favs.includes(p.id)} onClick={()=>toggleFav(p.id)}/>
   </div>;
 }
 
-function Detail({p,onClose,onEdit,me,setMe,after,say}){
+function RankView({list,cat,setCat,...cp}){
+  const [mode,setMode]=useState("rating");
+  const arr=useMemo(()=>{let a=list.filter(p=>cat==="all"||p.category===cat);
+    if(mode==="rating")a=a.filter(p=>p._n>0).sort((x,y)=>y._avg-x._avg||y._n-x._n);
+    else if(mode==="reviews")a=a.filter(p=>p._n>0).sort((x,y)=>y._n-x._n||y._avg-x._avg);
+    else a=a.sort((x,y)=>new Date(y.created_at)-new Date(x.created_at));return a;},[list,cat,mode]);
+  const top=mode!=="new"?arr.slice(0,3):[];const rest=mode!=="new"?arr.slice(3):arr;
+  const medal=[<span className="mdl m1">1</span>,<span className="mdl m2">2</span>,<span className="mdl m3">3</span>];
+  return <div className="view">
+    <div className="vhead"><h2>랭킹</h2><div className="seg">{[["rating","별점"],["reviews","평가수"],["new","신규"]].map(([k,n])=><button key={k} className={mode===k?"on":""} onClick={()=>setMode(k)}>{n}</button>)}</div></div>
+    <div className="chips" style={{padding:"0 14px 8px"}}><button className={"chip "+(cat==="all"?"on":"")} onClick={()=>setCat("all")}>전체</button>{Object.entries(CATS).map(([k,[n]])=><button key={k} className={"chip "+(cat===k?"on":"")} onClick={()=>setCat(cat===k?"all":k)} style={cat===k?{background:COLORS[k],borderColor:COLORS[k]}:{}}><CatSvg k={k} style={{color:cat===k?"#fff":COLORS[k]}}/>{n}</button>)}</div>
+    <div className="vbody">
+      {top.length>0&&<div className="podium">{[top[1],top[0],top[2]].map((p,i)=>p?<div key={p.id} className={"pod p"+[2,1,3][i]} onClick={()=>cp.openDetail(p.id)}><div className="md">{medal[[1,0,2][i]]}</div><div className="ico" style={{background:COLORS[p.category]||COLORS.etc}}><CatSvg k={p.category}/></div><div className="nm">{p.name}</div><div className="sc">★ {p._avg.toFixed(1)} <small>({p._n})</small></div></div>:<div key={i} className="pod empty"/>)}</div>}
+      {rest.length?rest.map((p,i)=><Card key={p.id} p={p} rank={mode!=="new"?i+4:0} {...cp}/>):top.length?null:<div className="empty"><div className="em">🏆</div>아직 평가된 곳이 없어요.<br/>첫 별점을 남기면 랭킹이 생겨요.</div>}
+    </div>
+  </div>;
+}
+
+function PickView({list,say,goMap,...cp}){
+  const [walk,setWalk]=useState(true);const [star,setStar]=useState(false);const [cat,setCat]=useState("all");
+  const [rolling,setRolling]=useState(false);const [show,setShow]=useState("");const [pick,setPick]=useState(null);
+  const pool=list.filter(p=>(cat==="all"||p.category===cat)&&(!walk||p._d<=1.1)&&(!star||p._avg>=4));
+  const roll=()=>{if(!pool.length)return say("조건에 맞는 곳이 없어요");setRolling(true);setPick(null);let i=0;const iv=setInterval(()=>{setShow(pool[Math.floor(Math.random()*pool.length)].name);i++;if(i>14){clearInterval(iv);const p=pool[Math.floor(Math.random()*pool.length)];setPick(p);setShow(p.name);setRolling(false);}},90);};
+  return <div className="view">
+    <div className="vhead"><h2>오늘 뭐 먹지?</h2></div>
+    <div className="vbody" style={{padding:"0 14px"}}>
+      <div className="pickbox">
+        <div className="cond">
+          <button className={"chip "+(walk?"on":"")} onClick={()=>setWalk(v=>!v)}>{I.walk}도보권</button>
+          <button className={"chip star "+(star?"on":"")} onClick={()=>setStar(v=>!v)}>{I.star}4점 이상</button>
+          {Object.entries(CATS).map(([k,[n,sn]])=><button key={k} className={"chip "+(cat===k?"on":"")} onClick={()=>setCat(cat===k?"all":k)} style={cat===k?{background:COLORS[k],borderColor:COLORS[k]}:{}}><CatSvg k={k} style={{color:cat===k?"#fff":COLORS[k]}}/>{sn}</button>)}
+        </div>
+        <div className={"slot "+(rolling?"roll":"")+(pick?" done":"")}>{show||`${pool.length}곳 중에서 뽑아요`}</div>
+        <button className="btn k big" disabled={rolling} onClick={roll}>{pick?"다시 뽑기":"뽑기"}</button>
+      </div>
+      {pick&&<div className="pickres"><Card p={pick} {...cp}/><div className="row2"><button className="btn line" onClick={()=>goMap(pick)}>{I.pin}지도에서 보기</button><button className="btn dark" onClick={()=>cp.openDetail(pick.id)}>상세 · 평가</button></div></div>}
+    </div>
+  </div>;
+}
+
+function MyView({list,reviews,me,setMe,favs,status,after,...cp}){
+  const [nm,setNm]=useState(me);
+  const mine=reviews.filter(r=>me&&r.author===me);const favList=list.filter(p=>favs.includes(p.id));
+  return <div className="view">
+    <div className="vhead"><h2>MY</h2><span className="ver">v{APP_VERSION.slice(4,8)}.{APP_VERSION.slice(8)} · {status==="ok"?"공유 중":status==="demo"?"데모":"오프라인"}</span></div>
+    <div className="vbody" style={{padding:"0 14px"}}>
+      <div className="mycard"><div className="av big">{(me||"?").slice(0,1)}</div><div className="mi"><input value={nm} onChange={e=>setNm(e.target.value)} onBlur={()=>setMe(nm.trim())} placeholder="이름 또는 닉네임" maxLength="20"/><small>평가할 때 이 이름이 자동으로 들어가요</small></div></div>
+      <div className="stats"><div><b>{mine.length}</b><span>내 평가</span></div><div><b>{favList.length}</b><span>즐겨찾기</span></div><div><b>{list.length}</b><span>전체 맛집</span></div></div>
+      <div className="sect2">즐겨찾기 ♥</div>
+      {favList.length?favList.map(p=><Card key={p.id} p={p} favs={favs} {...cp}/>):<div className="empty" style={{padding:16}}>카드의 하트를 눌러 즐겨찾기를 모아보세요</div>}
+      <div className="sect2">내가 남긴 평가</div>
+      {mine.length?mine.map(r=>{const p=list.find(x=>x.id===r.place_id);return p?<div key={r.id} className="myrv" onClick={()=>cp.openDetail(p.id)}><b>{p.name}</b><span className="st">{"★".repeat(r.rating)}</span>{r.comment&&<div className="bb">{r.comment}</div>}<time>{ago(r.created_at)}</time></div>:null;}):<div className="empty" style={{padding:16}}>{me?"아직 남긴 평가가 없어요":"이름을 입력하면 내 평가를 모아볼 수 있어요"}</div>}
+      <button className="btn line" style={{width:"100%",marginTop:12}} onClick={()=>after("새로고침")}>{I.refresh} 데이터 새로고침</button>
+    </div>
+  </div>;
+}
+
+function Detail({p,onClose,onEdit,me,setMe,after,say,fav,toggleFav,goMap}){
   const [pick,setPick]=useState(0);const [txt,setTxt]=useState("");const [nm,setNm]=useState(me);const [busy,setBusy]=useState(false);
   useEffect(()=>{setPick(0);setTxt("");setNm(me);},[p?.id]);
   if(!p)return <div className="panel"/>;
@@ -394,9 +561,10 @@ function Detail({p,onClose,onEdit,me,setMe,after,say}){
   const del=async id=>{if(!confirm("이 한줄평을 삭제할까요?"))return;try{await DB.unreview(id);await after("삭제했어요");}catch{say("삭제 실패");}};
   const share=async()=>{const t=`${p.name} · ${p.menu||""}\n${p._n?`★ ${p._avg.toFixed(1)} (${p._n})`:""}\n${location.href.split("#")[0]}#${p.id}`;try{navigator.share?await navigator.share({title:p.name,text:t}):(await navigator.clipboard.writeText(t),say("복사했어요"));}catch{}};
   return <div className="panel open">
-    <div className="phead"><button className="ic" onClick={onClose}>{I.back}</button><b>{p.name}</b><button className="ic" onClick={onEdit}>{I.edit}</button></div>
+    <div className="phead"><button className="ic" onClick={onClose}>{I.back}</button><b>{p.name}</b><Heart on={fav} onClick={toggleFav} cls="ic"/><button className="ic" onClick={onEdit}>{I.edit}</button></div>
     <div className="pbody">
-      <div className="hero"><div className="ico" style={{background:COLORS[p.category]||COLORS.etc}}>{p.image_url?<img src={p.image_url} alt=""/>:<CatSvg k={p.category}/>}</div><div style={{minWidth:0}}><div className="catline" style={{color:COLORS[p.category]||COLORS.etc}}>{CATS[p.category]?.[0]||"기타"}</div><h2>{p.name}</h2>{p.menu&&<div className="menu">{p.menu}</div>}</div></div>
+      <div className="hero"><div className="ico" style={{background:COLORS[p.category]||COLORS.etc}}>{p.image_url?<img src={p.image_url} alt=""/>:<CatSvg k={p.category}/>}</div><div style={{minWidth:0}}><div className="catline" style={{color:COLORS[p.category]||COLORS.etc}}>{CATS[p.category]?.[0]||"기타"} <Status p={p}/></div><h2>{p.name}</h2>{p.menu&&<div className="menu">{p.menu}</div>}</div></div>
+      {p._tags.length>0&&<div className="tags" style={{padding:"0 18px 10px"}}>{p._tags.map(t=><span key={t}>#{t}</span>)}</div>}
       <div className="bigrate"><span className="avg">{p._n?p._avg.toFixed(1):"–"}</span><span className="st">{starStr(p._avg)}</span><span className="cnt">평가 {p._n}개</span></div>
       <div className="bars">{[5,4,3,2,1].map(v=><div key={v} className="brow"><span>{v}점</span><div className="tr"><i style={{width:(p._n?cnt[v]/p._n*100:0)+"%"}}/></div><span>{cnt[v]}</span></div>)}</div>
       <div className="qa">
@@ -406,9 +574,9 @@ function Detail({p,onClose,onEdit,me,setMe,after,say}){
         <button onClick={share}>{I.share}공유</button>
       </div>
       <div className="info">
-        <div>{I.pin}<span>{p.address||"주소 없음"}<br/><small style={{color:"#9A9A9A"}}>{located(p)?"센터에서 "+fmtDist(p._d):"위치 미지정 · 수정에서 지도를 눌러 지정"}</small></span></div>
+        <div>{I.pin}<span>{p.address||"주소 없음"}<br/><small style={{color:"#9A9A9A"}}>{located(p)?"센터에서 "+fmtDist(p._d):"위치 미지정 · 수정에서 지도를 눌러 지정"}</small></span>{located(p)&&<button className="btn line sm" onClick={()=>{onClose();goMap(p);}}>지도</button>}</div>
         {p.hours&&<div>{I.clock}<span>{p.hours}</span></div>}
-        {memoText(p)&&<div>{I.memo}<span>{memoText(p)}{p.author&&<small style={{color:"#9A9A9A"}}> – {p.author}</small>}</span></div>}
+        {memoPlain(p)&&<div>{I.memo}<span>{memoPlain(p)}{p.author&&<small style={{color:"#9A9A9A"}}> – {p.author}</small>}</span></div>}
         {memoLink(p)&&<div>{I.link}<a href={memoLink(p)} target="_blank" rel="noopener" style={{color:"#3A7BD5",wordBreak:"break-all"}}>{memoLink(p).replace(/^https?:\/\//,"").slice(0,40)}…</a></div>}
       </div>
       <div className="write">
@@ -419,20 +587,21 @@ function Detail({p,onClose,onEdit,me,setMe,after,say}){
         <button className="btn k" disabled={busy} onClick={send}>평가 남기기</button>
       </div>
       <div className="sect">한줄평 <small>{p._n}개</small></div>
-      {p._rs.length?p._rs.map(r=><div key={r.id} className="rv"><div className="av">{(r.author||"익명").slice(0,1)}</div><div className="bd"><div className="nm">{r.author||"익명"}<span className="st">{"★".repeat(r.rating)}</span><time>{ago(r.created_at)}</time></div>{r.comment&&<div className="bb">{r.comment}</div>}<button className="del" onClick={()=>del(r.id)}>삭제</button></div></div>):<div className="empty" style={{padding:20}}>아직 한줄평이 없어요. 첫 평가를 남겨주세요!</div>}
+      {p._rs.length?p._rs.map(r=><div key={r.id} className="rv"><div className="av">{(r.author||"익명").slice(0,1)}</div><div className="bd"><div className="nm">{r.author||"익명"}<span className="st">{"★".repeat(r.rating)}</span><time>{ago(r.created_at)}</time></div>{r.comment&&<div className="bb">{r.comment}</div>}{(r.author===me||!me)&&<button className="del" onClick={()=>del(r.id)}>삭제</button>}</div></div>):<div className="empty" style={{padding:20}}>아직 한줄평이 없어요. 첫 평가를 남겨주세요!</div>}
     </div>
   </div>;
 }
 
 function Form({init,onClose,me,setMe,after,say,onSaved,mapCenter}){
   const open=!!init;const editing=init&&init.id?init:null;
-  const [f,setF]=useState({name:"",category:"meat",menu:"",address:"",link:"",hours:"",phone:"",image_url:"",memo:"",author:""});
+  const [f,setF]=useState({name:"",category:"meat",menu:"",address:"",link:"",hours:"",phone:"",image_url:"",memo:"",author:"",tags:[]});
   const [err,setErr]=useState("");const [busy,setBusy]=useState(false);const [loc,setLoc]=useState(null);
   const pm=useRef(null),pmap=useRef(null),pmark=useRef(null);
   const set=k=>e=>setF(v=>({...v,[k]:e.target.value}));
   useEffect(()=>{if(!open)return;
     const lines=(editing?.memo||"").split("\n");const link=lines.find(l=>/^https?:\/\//.test(l))||"";
-    setF({name:editing?.name||"",category:editing?.category||"meat",menu:editing?.menu||"",address:editing?.address||"",link,hours:editing?.hours||"",phone:editing?.phone||"",image_url:editing?.image_url||"",memo:lines.filter(l=>l!==link).join("\n"),author:editing?.author||me});
+    const tags=editing?tagsOf(editing):[];
+    setF({name:editing?.name||"",category:editing?.category||"meat",menu:editing?.menu||"",address:editing?.address||"",link,hours:editing?.hours||"",phone:editing?.phone||"",image_url:editing?.image_url||"",memo:lines.filter(l=>l!==link).join("\n").replace(/#[^\s#]+/g,"").trim(),author:editing?.author||me,tags});
     setErr("");setLoc(located(editing)?{lat:editing.lat,lng:editing.lng}:null);
     setTimeout(()=>{
       if(!pmap.current){pmap.current=L.map(pm.current,{zoomControl:false,attributionControl:false}).setView([HOME.lat,HOME.lng],14);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(pmap.current);pmap.current.on("click",e=>setLoc({lat:e.latlng.lat,lng:e.latlng.lng}));}
@@ -446,10 +615,12 @@ function Form({init,onClose,me,setMe,after,say,onSaved,mapCenter}){
   const findAddr=async()=>{if(!f.address)return;setBusy(true);const c=await geocode(f.address);setBusy(false);c?setLoc(c):setErr("주소로는 못 찾았어요. 지도 링크를 붙여넣거나 지도를 눌러 찍어주세요. 그냥 저장해도 됩니다.");};
   const findLink=()=>{const c=coordsFromUrl(f.link);c?setLoc(c):setErr("링크에서 좌표를 못 읽었어요. 지도 앱 '공유 → 링크 복사' 주소를 넣어주세요.");};
   const myPos=()=>{if(!navigator.geolocation)return say("위치 미지원");navigator.geolocation.getCurrentPosition(g=>setLoc({lat:g.coords.latitude,lng:g.coords.longitude}),()=>say("위치 권한을 허용해주세요"),{enableHighAccuracy:true,timeout:8000});};
+  const toggleTag=t=>setF(v=>({...v,tags:v.tags.includes(t)?v.tags.filter(x=>x!==t):[...v.tags,t]}));
   const save=async()=>{
     if(!f.name.trim())return setErr("이름을 입력해주세요.");
     let img=f.image_url.trim();let L2=loc;const c=coordsFromUrl(img);if(c&&/map\.|maps\./.test(img)){L2=c;img="";}
-    const p={name:f.name.trim(),category:f.category,menu:f.menu.trim(),address:f.address.trim(),hours:f.hours.trim(),phone:f.phone.trim(),image_url:img,memo:[f.memo.trim(),f.link.trim()].filter(Boolean).join("\n"),author:f.author.trim(),lat:L2?L2.lat:0,lng:L2?L2.lng:0};
+    const memo=[f.memo.trim(),f.tags.map(t=>"#"+t).join(" "),f.link.trim()].filter(Boolean).join("\n");
+    const p={name:f.name.trim(),category:f.category,menu:f.menu.trim(),address:f.address.trim(),hours:f.hours.trim(),phone:f.phone.trim(),image_url:img,memo,author:f.author.trim(),lat:L2?L2.lat:0,lng:L2?L2.lng:0};
     setMe(p.author||me);setBusy(true);
     try{if(editing){await DB.update(editing.id,p);await after("수정했어요");onSaved(editing.id);}else{const row=await DB.insert(p);await after(L2?"등록했어요":"위치 없이 등록했어요. 나중에 수정에서 찍을 수 있어요");onSaved(row.id);}}
     catch(e){setErr("저장 실패: "+e.message.slice(0,80));}setBusy(false);};
@@ -460,6 +631,7 @@ function Form({init,onClose,me,setMe,after,say,onSaved,mapCenter}){
       <div className="hint">위치는 주소·지도 링크·지도 탭·내 위치 중 편한 방법으로. 못 찾아도 저장됩니다.</div>
       <label>이름 *</label><input value={f.name} onChange={set("name")} placeholder="예: 함백산실비식당"/>
       <label>종류 *</label><div className="catgrid">{Object.entries(CATS).map(([k,[n,sn]])=><button key={k} type="button" className={f.category===k?"on":""} onClick={()=>setF(v=>({...v,category:k}))}><span className="ci" style={{background:COLORS[k]}}><CatSvg k={k}/></span>{sn}</button>)}</div>
+      <label>태그</label><div className="tagpick">{TAGS.map(t=><button key={t} type="button" className={"chip tg "+(f.tags.includes(t)?"on":"")} onClick={()=>toggleTag(t)}>#{t}</button>)}</div>
       <label>대표 메뉴</label><input value={f.menu} onChange={set("menu")} placeholder="예: 와규·안창살"/>
       <label>주소</label><div className="geo"><input value={f.address} onChange={set("address")} placeholder="예: 고한읍 고한리 274-153"/><button type="button" className="btn line sm" disabled={busy} onClick={findAddr}>{busy?"…":"주소로 찾기"}</button></div>
       <label>지도 링크</label><div className="geo"><input value={f.link} onChange={e=>{set("link")(e);const c=coordsFromUrl(e.target.value);if(c)setLoc(c);}} placeholder="네이버·카카오·구글 공유 링크"/><button type="button" className="btn line sm" onClick={findLink}>링크로 찾기</button></div>
