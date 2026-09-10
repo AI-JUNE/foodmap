@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="theme-color" content="#FEE500">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>강원랜드 프로젝트 맛집 지도</title>
@@ -160,8 +157,6 @@ a{color:inherit;text-decoration:none}
 .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
 .toast{position:fixed;left:50%;bottom:calc(30px + var(--bot));transform:translateX(-50%);background:rgba(25,25,25,.92);color:#fff;padding:11px 18px;border-radius:99px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:2000;white-space:nowrap}
 .toast.show{opacity:1}
-.upd{position:absolute;left:50%;top:calc(var(--top) + 8px);transform:translateX(-50%);z-index:30;background:var(--ink);color:#FEE500;font-weight:800;font-size:13px;padding:10px 16px;border-radius:99px;box-shadow:0 6px 20px rgba(0,0,0,.3);display:flex;align-items:center;gap:6px;white-space:nowrap}
-.upd svg{width:16px;height:16px}
 
 @media(min-width:820px){
   .top{right:auto;width:440px;background:var(--kakao);padding-bottom:10px}
@@ -181,7 +176,6 @@ a{color:inherit;text-decoration:none}
 const SUPABASE_URL  = "https://jcwqolnyzrbosuqlqfjh.supabase.co";
 const SUPABASE_ANON = "sb_publishable_OEnp8Wv8WQD9nm162iVBaw_MOcqnIVo";
 const HOME = {name:"강원랜드 인재개발센터", lat:37.2002, lng:128.8555};
-const APP_VERSION="202609101450"; // 올리기.bat 이 자동으로 갱신
 /* ================================================ */
 const {useState,useEffect,useRef,useMemo,useCallback}=React;
 const CATS={meat:["고기·구이","고기"],rice:["밥·한식","밥"],noodle:["면·분식","면"],cafe:["카페·디저트","카페"],bar:["술·안주","술"],etc:["기타","기타"]};
@@ -281,8 +275,6 @@ function App(){
   const say=useCallback(m=>{setToast(m);clearTimeout(tRef.current);tRef.current=setTimeout(()=>setToast(""),1800);},[]);
   const [me,setMe]=useState("");
 
-  const [newVer,setNewVer]=useState("");
-  useEffect(()=>{const chk=async()=>{try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VERSION="(\d+)"/);if(m&&m[1]>APP_VERSION)setNewVer(m[1]);}catch{}};chk();const id=setInterval(chk,5*60*1000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)chk();});return()=>clearInterval(id);},[]);
   const load=useCallback(async()=>{try{const{p,r}=await DB.load();setPlaces(p);setReviews(r);setStatus(demo?"demo":"ok");}catch(e){setStatus("fail");say("DB 연결 실패: "+e.message.slice(0,50));}},[say]);
   useEffect(()=>{load();},[load]);
 
@@ -367,7 +359,6 @@ function App(){
     <Detail p={detailP} onClose={()=>setDetail(null)} onEdit={()=>setForm(detailP)} me={me} setMe={setMe} after={after} say={say}/>
     <Form init={form} onClose={()=>setForm(null)} me={me} setMe={setMe} after={after} say={say} onSaved={id=>{setForm(null);setDetail(id);setActive(id);}} mapCenter={()=>mapObj.current?.getCenter()}/>
     <div className={"toast "+(toast?"show":"")}>{toast}</div>
-    {newVer&&<button className="upd" onClick={()=>{location.replace(location.pathname+"?v="+newVer);}}>{I.refresh}새 버전이 있어요 · 눌러서 업데이트</button>}
   </div>;
 }
 
