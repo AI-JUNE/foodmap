@@ -150,6 +150,8 @@ a{color:inherit}
 .geo{display:flex;gap:8px}.geo input{flex:1}
 #pickmap{height:200px;border-radius:12px;border:1px solid var(--line2)}
 .err{color:var(--meat);font-size:13px;min-height:18px}
+.locbar{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--sub);background:var(--bubble);border-radius:10px;padding:8px 10px}
+.locbar.ok{background:#EAF7EE;color:#1E6B3A}
 .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
 
 /* toast */
@@ -226,14 +228,16 @@ a{color:inherit}
   <div class="sheet">
     <div class="grab"></div>
     <h2 id="mtitle">맛집 등록</h2>
-    <div class="hint">주소를 검색하면 핀이 찍히고, 지도를 눌러 위치를 조정할 수 있어요. 별점은 등록 후 상세 화면에서 남겨요.</div>
+    <div class="hint">위치는 주소 검색·지도 링크·지도 클릭·내 위치 중 편한 방법으로. 못 찾아도 그냥 저장하고 나중에 수정하면 돼요.</div>
     <div class="f">
       <label>이름 *<input id="f_name" placeholder="예: 함백산실비식당"></label>
       <label>종류 *<div class="catgrid" id="f_cat"></div></label>
       <label>대표 메뉴<input id="f_menu" placeholder="예: 와규·안창살"></label>
-      <label>주소<div class="geo"><input id="f_addr" placeholder="도로명 또는 지번"><button class="btn line sm" id="geocode" type="button">검색</button></div></label>
+      <label>주소<div class="geo"><input id="f_addr" placeholder="도로명 또는 지번 (예: 고한읍 고한리 274-153)"><button class="btn line sm" id="geocode" type="button">주소로 찾기</button></div></label>
+      <label>지도 링크 (선택)<div class="geo"><input id="f_link" placeholder="네이버·카카오·구글 지도 공유 링크 붙여넣기"><button class="btn line sm" id="linkpin" type="button">링크로 찾기</button></div></label>
       <div id="pickmap"></div>
-      <div class="two"><label>위도<input id="f_lat" inputmode="decimal"></label><label>경도<input id="f_lng" inputmode="decimal"></label></div>
+      <div class="locbar"><span id="locstat">📍 위치 미지정 — 지도를 눌러 찍거나, 없이 저장해도 돼요</span><button class="btn line sm" id="mypos" type="button">내 위치</button></div>
+      <input type="hidden" id="f_lat"><input type="hidden" id="f_lng">
       <div class="two"><label>영업시간<input id="f_hours" placeholder="11:00–22:00, 월 휴무"></label><label>전화<input id="f_phone" placeholder="033-000-0000"></label></div>
       <label>사진 URL<input id="f_img" placeholder="https://… (선택)"></label>
       <label>한줄 메모<textarea id="f_memo" rows="2" placeholder="예약 필수, 주차 2대, 곤드레밥 추천…"></textarea></label>
@@ -304,6 +308,16 @@ const DB=demo?{
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const dist=(a,b)=>{const R=6371,dLat=(b.lat-a.lat)*Math.PI/180,dLng=(b.lng-a.lng)*Math.PI/180,x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(x));};
+const located=p=>!!(p&&p.lat&&p.lng);
+const coordsFromUrl=u=>{ if(!u)return null; let m;
+  const la=u.match(/[?&](?:lat|y)=(-?\d+\.\d+)/),ln=u.match(/[?&](?:lng|lon|x)=(-?\d+\.\d+)/);if(la&&ln)return{lat:+la[1],lng:+ln[1]};
+  if(m=u.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/))return{lat:+m[1],lng:+m[2]};
+  if(m=u.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/))return{lat:+m[1],lng:+m[2]};
+  if(m=u.match(/map\.kakao\.com\/link\/(?:map|to)\/[^,]*,(-?\d+\.\d+),(-?\d+\.\d+)/))return{lat:+m[1],lng:+m[2]};
+  if(m=u.match(/(3[5-8]\.\d{4,}),\s*(12[6-9]\.\d{4,})/))return{lat:+m[1],lng:+m[2]};
+  return null;};
+const memoText=p=>(p.memo||"").split("\n").filter(l=>!/^https?:\/\//.test(l)).join(" ");
+const memoLink=p=>(p.memo||"").split("\n").find(l=>/^https?:\/\//.test(l))||"";
 const fmtDist=k=>k<1?`${Math.round(k*1000)}m · 도보 ${Math.max(1,Math.round(k*1000/75))}분`:`${k.toFixed(1)}km · 차 ${Math.max(2,Math.round(k*2.2))}분`;
 const stat=id=>{const rs=reviews.filter(r=>r.place_id===id);const n=rs.length;const avg=n?rs.reduce((s,r)=>s+r.rating,0)/n:0;return{n,avg,rs};};
 const starStr=v=>{const f=Math.round(v);return "★".repeat(f)+"☆".repeat(5-f);};
@@ -330,7 +344,7 @@ function visible(){
     const rvtxt=reviews.filter(r=>r.place_id===p.id).map(r=>r.comment).join(" ");
     return [p.name,p.menu,p.memo,p.address,rvtxt].join(" ").toLowerCase().includes(q);
   });
-  arr.forEach(p=>{p._d=dist(HOME,p);const s=stat(p.id);p._n=s.n;p._avg=s.avg;});
+  arr.forEach(p=>{p._d=located(p)?dist(HOME,p):Infinity;const s=stat(p.id);p._n=s.n;p._avg=s.avg;});
   const by={dist:(a,b)=>a._d-b._d,rating:(a,b)=>b._avg-a._avg||b._n-a._n||a._d-b._d,reviews:(a,b)=>b._n-a._n||b._avg-a._avg,new:(a,b)=>new Date(b.created_at)-new Date(a.created_at)};
   return arr.sort(by[sort]);
 }
@@ -347,11 +361,11 @@ function render(){
         <div class="rate">${p._n?`<span class="s">★ ${p._avg.toFixed(1)}</span><span class="n">평가 ${p._n}</span>`:`<span class="n">아직 평가 없음 · 첫 평가를 남겨보세요</span>`}</div>
       </div>
     </div>
-    <div class="meta"><span>${fmtDist(p._d)}</span>${p.hours?`<span>${esc(p.hours)}</span>`:""}</div>
-    ${p.memo?`<div class="memo">${esc(p.memo)}</div>`:""}
+    <div class="meta"><span>${located(p)?fmtDist(p._d):"📍 위치 미지정"}</span>${p.hours?`<span>${esc(p.hours)}</span>`:""}</div>
+    ${memoText(p)?`<div class="memo">${esc(memoText(p))}</div>`:""}
    </div>`).join(""):`<div class="empty"><div class="em">🍽️</div>조건에 맞는 곳이 없어요.<br>첫 맛집을 등록해보세요.</div>`;
   cluster.clearLayers();
-  arr.forEach(p=>{
+  arr.filter(located).forEach(p=>{
     const m=L.marker([p.lat,p.lng],{icon:pin(p.category)});
     m.bindPopup(`<b>${esc(p.name)}</b> ${p._n?`<span style="color:#FFB400;font-weight:800">★ ${p._avg.toFixed(1)}</span>`:""}<br>${esc(p.menu||"")}<br><span style="color:#9A9A9A">${fmtDist(p._d)}</span><br><span class="go" data-open="${p.id}">상세 · 평가하기</span>`);
     m.on("click",()=>{activeId=p.id;render();document.querySelector(`.card[data-id="${p.id}"]`)?.scrollIntoView({block:"nearest"});});
@@ -372,11 +386,11 @@ $("refresh").addEventListener("click",load);
 
 /* ---------- detail ---------- */
 let pick=0;
-function openDetail(id){const p=places.find(x=>x.id===id);if(!p)return;pick=0;renderDetail(id);$("detail").classList.add("open");map.flyTo([p.lat,p.lng],16,{duration:.5});document.body.classList.remove("v-list");}
+function openDetail(id){const p=places.find(x=>x.id===id);if(!p)return;pick=0;renderDetail(id);$("detail").classList.add("open");if(located(p))map.flyTo([p.lat,p.lng],16,{duration:.5});document.body.classList.remove("v-list");}
 function closeDetail(){$("detail").classList.remove("open");}
 function renderDetail(id,keep){
   const p=places.find(x=>x.id===id);if(!p)return closeDetail();
-  const s=stat(id),d=dist(HOME,p);
+  const s=stat(id),d=located(p)?dist(HOME,p):null;
   const cnt=[0,0,0,0,0,0];s.rs.forEach(r=>cnt[r.rating]++);
   const draft=keep?$("rv_text")?.value||"":"";const nameDraft=keep?$("rv_name")?.value||me:me;
   $("detail").innerHTML=`
@@ -386,14 +400,15 @@ function renderDetail(id,keep){
    <div class="bars">${[5,4,3,2,1].map(v=>`<div class="bar"><span>${v}점</span><div class="tr"><i style="width:${s.n?cnt[v]/s.n*100:0}%"></i></div><span>${cnt[v]}</span></div>`).join("")}</div>
    <div class="qa">
      ${p.phone?`<a href="tel:${esc(p.phone)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>전화</a>`:""}
-     <a href="https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 21 3l-8 18-2-8z"/></svg>길찾기</a>
+     <a href="${located(p)?`https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}`:`https://map.kakao.com/link/search/${encodeURIComponent("정선 "+p.name)}`}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 21 3l-8 18-2-8z"/></svg>길찾기</a>
      <a href="https://map.naver.com/v5/search/${encodeURIComponent("정선 "+p.name)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>네이버</a>
      <button id="share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3m0 0L8 7m4-4 4 4"/></svg>공유</button>
    </div>
    <div class="info">
-     <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.4 7-12a7 7 0 0 0-14 0c0 5.6 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${esc(p.address||"주소 없음")}<br><small style="color:#9A9A9A">센터에서 ${fmtDist(d)}</small></span></div>
+     <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.4 7-12a7 7 0 0 0-14 0c0 5.6 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span>${esc(p.address||"주소 없음")}<br><small style="color:#9A9A9A">${d===null?"위치 미지정 · 수정에서 지도를 눌러 지정할 수 있어요":"센터에서 "+fmtDist(d)}</small></span></div>
      ${p.hours?`<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>${esc(p.hours)}</span></div>`:""}
-     ${p.memo?`<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H8l-4 4z"/></svg><span>${esc(p.memo)}${p.author?` <small style="color:#9A9A9A">– ${esc(p.author)}</small>`:""}</span></div>`:""}
+     ${memoText(p)?`<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H8l-4 4z"/></svg><span>${esc(memoText(p))}${p.author?` <small style="color:#9A9A9A">– ${esc(p.author)}</small>`:""}</span></div>`:""}
+     ${memoLink(p)?`<div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg><a href="${esc(memoLink(p))}" target="_blank" rel="noopener" style="color:#3A7BD5;word-break:break-all">${esc(memoLink(p).replace(/^https?:\/\//,"").slice(0,40))}…</a></div>`:""}
    </div>
    <div class="sect">한줄평 <small>${s.n}개</small></div>
    ${s.rs.length?s.rs.map(r=>`<div class="rv"><div class="av">${esc((r.author||"익명").slice(0,1))}</div><div class="bd"><div class="nm">${esc(r.author||"익명")}<span class="st">${"★".repeat(r.rating)}</span><time>${ago(r.created_at)}</time></div>${r.comment?`<div class="bb">${esc(r.comment)}</div>`:""}<br><button class="del" data-del="${r.id}">삭제</button></div></div>`).join(""):`<div class="empty" style="padding:24px">아직 한줄평이 없어요. 첫 평가를 남겨주세요!</div>`}
@@ -423,37 +438,54 @@ const modal=$("modal");let editing=null,fcat="meat",pickMap,pickMarker;
 $("f_cat").innerHTML=Object.entries(CATS).map(([k,[n,e]])=>`<button type="button" data-c="${k}"><span class="em">${e}</span>${n}</button>`).join("");
 $("f_cat").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;fcat=b.dataset.c;paintCat();});
 function paintCat(){$("f_cat").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.c===fcat));}
-function setPin(lat,lng){$("f_lat").value=lat.toFixed(6);$("f_lng").value=lng.toFixed(6);if(pickMarker)pickMarker.setLatLng([lat,lng]);else pickMarker=L.marker([lat,lng],{draggable:true,icon:pin(fcat)}).addTo(pickMap).on("dragend",e=>{const q=e.target.getLatLng();setPin(q.lat,q.lng);});pickMap.setView([lat,lng],Math.max(pickMap.getZoom(),15));}
+function setPin(lat,lng){$("f_lat").value=lat.toFixed(6);$("f_lng").value=lng.toFixed(6);$("locstat").textContent="📍 위치 지정됨 — 핀을 끌어서 조정할 수 있어요";$("locstat").parentNode.classList.add("ok");$("ferr").textContent="";if(pickMarker)pickMarker.setLatLng([lat,lng]);else pickMarker=L.marker([lat,lng],{draggable:true,icon:pin(fcat)}).addTo(pickMap).on("dragend",e=>{const q=e.target.getLatLng();setPin(q.lat,q.lng);});pickMap.setView([lat,lng],Math.max(pickMap.getZoom(),15));}
 function openForm(p){
   editing=p||null;fcat=p?.category||"meat";paintCat();
   $("mtitle").textContent=p?"맛집 수정":"맛집 등록";$("del").style.display=p?"":"none";$("ferr").textContent="";
-  ["name","menu","addr","hours","phone","img","memo","author","lat","lng"].forEach(k=>$("f_"+k).value="");
-  if(p){$("f_name").value=p.name;$("f_menu").value=p.menu||"";$("f_addr").value=p.address||"";$("f_hours").value=p.hours||"";$("f_phone").value=p.phone||"";$("f_img").value=p.image_url||"";$("f_memo").value=p.memo||"";$("f_author").value=p.author||"";}
+  ["name","menu","addr","link","hours","phone","img","memo","author","lat","lng"].forEach(k=>$("f_"+k).value="");
+  $("locstat").textContent="📍 위치 미지정 — 지도를 눌러 찍거나, 없이 저장해도 돼요";$("locstat").parentNode.classList.remove("ok");
+  if(p){const lines=(p.memo||"").split("\n");const link=lines.find(l=>/^https?:\/\//.test(l))||"";$("f_link").value=link;$("f_memo").value=lines.filter(l=>l!==link).join("\n");$("f_name").value=p.name;$("f_menu").value=p.menu||"";$("f_addr").value=p.address||"";$("f_hours").value=p.hours||"";$("f_phone").value=p.phone||"";$("f_img").value=p.image_url||"";$("f_author").value=p.author||"";}
   else $("f_author").value=me;
   modal.classList.add("open");
   setTimeout(()=>{
     if(!pickMap){pickMap=L.map("pickmap",{zoomControl:false}).setView([HOME.lat,HOME.lng],14);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(pickMap);pickMap.on("click",e=>setPin(e.latlng.lat,e.latlng.lng));}
     pickMap.invalidateSize();if(pickMarker){pickMap.removeLayer(pickMarker);pickMarker=null;}
-    p?setPin(p.lat,p.lng):pickMap.setView(map.getCenter(),15);
+    located(p)?setPin(p.lat,p.lng):pickMap.setView(map.getCenter(),15);
   },60);
 }
 $("add").onclick=$("t-add").onclick=()=>openForm();
 $("cancel").onclick=()=>modal.classList.remove("open");
 modal.addEventListener("click",e=>{if(e.target===modal)modal.classList.remove("open");});
+async function geocode(q){
+  const c=coordsFromUrl(q);if(c)return c;
+  const base=q.replace(/^강원(도)?\s*/,"").replace(/\s+/g," ").trim();
+  const variants=[...new Set([q,"강원도 정선군 "+base,"정선군 "+base,base.replace(/\s*\d+-\d+$/,""),base.replace(/(읍|면)\s*/,"$1 ").replace(/\s*\d+(-\d+)?$/,"")])].filter(Boolean);
+  for(const v of variants){
+    try{const r=await fetch(`https://photon.komoot.io/api/?limit=1&lang=ko&lat=${HOME.lat}&lon=${HOME.lng}&q=${encodeURIComponent(v)}`);const j=await r.json();const f=j.features?.[0];if(f&&f.geometry){const[lng,lat]=f.geometry.coordinates;if(lat>35&&lat<39&&lng>126&&lng<130)return{lat,lng};}}catch{}
+    try{const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=kr&q=${encodeURIComponent(v)}`,{headers:{"Accept-Language":"ko"}});const j=await r.json();if(j[0])return{lat:+j[0].lat,lng:+j[0].lon};}catch{}
+  }
+  return null;
+}
 $("geocode").onclick=async()=>{
-  const q=$("f_addr").value.trim();if(!q)return;$("geocode").textContent="…";
-  try{const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=kr&q=${encodeURIComponent(/정선|강원/.test(q)?q:"정선군 "+q)}`,{headers:{"Accept-Language":"ko"}});const j=await r.json();j[0]?setPin(+j[0].lat,+j[0].lon):$("ferr").textContent="주소를 찾지 못했어요. 지도를 눌러 위치를 찍어주세요.";}
-  catch{$("ferr").textContent="주소 검색 실패. 지도를 눌러 위치를 찍어주세요.";}
-  $("geocode").textContent="검색";
+  const q=$("f_addr").value.trim();if(!q)return;$("geocode").disabled=true;$("geocode").textContent="찾는 중…";
+  const c=await geocode(q);
+  c?setPin(c.lat,c.lng):($("ferr").textContent="주소로는 못 찾았어요. 지도 링크를 붙여넣거나 지도를 눌러 찍어주세요. 그냥 저장해도 됩니다.");
+  $("geocode").disabled=false;$("geocode").textContent="주소로 찾기";
 };
+$("linkpin").onclick=()=>{const c=coordsFromUrl($("f_link").value.trim());c?setPin(c.lat,c.lng):($("ferr").textContent="링크에서 좌표를 못 읽었어요. 지도 앱에서 '공유 → 링크 복사'한 주소를 넣어주세요.");};
+$("f_link").addEventListener("change",()=>{const c=coordsFromUrl($("f_link").value.trim());if(c)setPin(c.lat,c.lng);});
+$("f_img").addEventListener("change",()=>{const v=$("f_img").value.trim();const c=coordsFromUrl(v);if(c&&/map\.|maps\./.test(v)){setPin(c.lat,c.lng);$("f_link").value=v;$("f_img").value="";toast("지도 링크라서 위치로 옮겼어요");}});
+$("mypos").onclick=()=>{if(!navigator.geolocation){toast("이 기기는 위치를 지원하지 않아요");return;}$("mypos").textContent="…";navigator.geolocation.getCurrentPosition(g=>{setPin(g.coords.latitude,g.coords.longitude);$("mypos").textContent="내 위치";},()=>{toast("위치 권한을 허용해주세요");$("mypos").textContent="내 위치";},{enableHighAccuracy:true,timeout:8000});};
 $("save").onclick=async()=>{
-  const p={name:$("f_name").value.trim(),category:fcat,menu:$("f_menu").value.trim(),address:$("f_addr").value.trim(),hours:$("f_hours").value.trim(),phone:$("f_phone").value.trim(),image_url:$("f_img").value.trim(),memo:$("f_memo").value.trim(),author:$("f_author").value.trim(),lat:parseFloat($("f_lat").value),lng:parseFloat($("f_lng").value)};
+  let lat=parseFloat($("f_lat").value),lng=parseFloat($("f_lng").value);
+  const unlocated=isNaN(lat)||isNaN(lng);if(unlocated){lat=0;lng=0;}
+  let img=$("f_img").value.trim();if(!/^https?:\/\/.+\.(jpe?g|png|webp|gif)(\?.*)?$/i.test(img)&&!/^https?:\/\/.+/.test(img))img="";
+  const p={name:$("f_name").value.trim(),category:fcat,menu:$("f_menu").value.trim(),address:$("f_addr").value.trim(),hours:$("f_hours").value.trim(),phone:$("f_phone").value.trim(),image_url:img,memo:[$("f_memo").value.trim(),$("f_link").value.trim()].filter(Boolean).join("\n"),author:$("f_author").value.trim(),lat,lng};
   if(!p.name){$("ferr").textContent="이름을 입력해주세요.";return;}
-  if(isNaN(p.lat)||isNaN(p.lng)){$("ferr").textContent="위치를 지정해주세요 (주소 검색 또는 지도 클릭).";return;}
   me=p.author||me;$("save").disabled=true;
   try{
     if(editing){await DB.update(editing.id,p);toast("수정했어요");modal.classList.remove("open");render();renderDetail(editing.id);}
-    else{const row=await DB.insert(p);toast("등록했어요");modal.classList.remove("open");activeId=row.id;render();openDetail(row.id);}
+    else{const row=await DB.insert(p);toast(unlocated?"위치 없이 등록했어요. 수정에서 나중에 찍을 수 있어요":"등록했어요");modal.classList.remove("open");activeId=row.id;render();openDetail(row.id);}
   }catch(err){$("ferr").textContent="저장 실패: "+err.message.slice(0,80);}
   $("save").disabled=false;
 };
