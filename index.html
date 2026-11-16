@@ -39,6 +39,27 @@ a{color:inherit;text-decoration:none}
 .pin svg{transform:rotate(45deg);width:15px;height:15px;color:#fff}
 .pin.sel{width:38px;height:38px;border-color:var(--ink)}.pin.sel svg{width:19px;height:19px}
 .pin.home{border-radius:8px;transform:none}.pin.home svg{transform:none}
+/* v2: 지도 톤 정리 · 핀 이름표 · 지역 보기 · 키워드 · 최근 본 곳 */
+#map .leaflet-tile-pane{filter:saturate(.72) brightness(1.04) contrast(.96)}
+.pw{position:relative;width:100%;height:100%}
+.pw .lbl{display:none;position:absolute;top:100%;left:50%;transform:translate(-50%,3px);white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis;font-size:11px;font-weight:800;color:var(--ink);background:rgba(255,255,255,.94);padding:1px 6px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.18);pointer-events:none}
+.zl .pw .lbl{display:block}.pw.sel .lbl{display:block;font-size:12px;background:var(--ink);color:#fff}
+.areabtn{position:absolute;left:50%;transform:translateX(-50%);z-index:7;background:#fff;color:var(--ink);border-radius:99px;padding:9px 16px;font-size:13px;font-weight:800;display:flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);transition:bottom .25s;white-space:nowrap}
+.areabtn svg{width:15px;height:15px;color:#3A7BD5}
+.areabtn.on{background:var(--ink);color:#fff}.areabtn.on svg{color:var(--kakao)}
+@media(max-width:819px){.areabtn{padding:8px 13px;font-size:12.5px;max-width:calc(100% - 150px)}.pw .lbl{font-size:10.5px;max-width:96px}}
+.kwpick{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.kwpick button{border:1px solid var(--line2);border-radius:99px;padding:6px 10px;font-size:12.5px;font-weight:700;color:var(--sub);background:#fff}
+.kwpick button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.kws{padding:2px 18px 12px;display:grid;gap:6px}
+.kws .kw{position:relative;background:var(--bubble);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;overflow:hidden}
+.kws .kw i{position:absolute;left:0;top:0;bottom:0;background:rgba(254,229,0,.55);border-radius:10px}
+.kws .kw span,.kws .kw b{position:relative}
+.kws h5{margin:0 0 2px;font-size:13px;color:var(--sub)}
+.rvkw{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.rvkw span{font-size:11.5px;font-weight:700;color:#3A7BD5;background:#EEF4FC;border-radius:6px;padding:2px 6px}
+.recent{display:flex;gap:8px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}.recent::-webkit-scrollbar{display:none}
+.recent button{flex:none;display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:13px;font-weight:700}
+.recent button i{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;color:#fff}.recent button i svg{width:13px;height:13px}
 .marker-cluster{background:rgba(60,30,30,.25)!important;border-radius:50%}.marker-cluster div{background:var(--brown)!important;color:#FEE500!important;font-weight:800;font-family:inherit;border-radius:50%}
 .badge{position:absolute;top:-8px;right:-10px;transform:rotate(45deg);background:var(--ink);color:#FEE500;font-size:10px;font-weight:800;padding:1px 5px;border-radius:8px;border:1.5px solid #fff;font-style:normal}
 
@@ -183,7 +204,7 @@ a{color:inherit;text-decoration:none}
 .tabbar button.on{color:var(--ink)}
 .tabbar .dotn{position:absolute;top:8px;right:calc(50% - 16px);width:7px;height:7px;border-radius:50%;background:var(--meat)}
 .sheet{bottom:calc(58px + var(--bot))}
-.fab,.locbtn{margin-bottom:calc(58px + var(--bot))}
+.fab,.locbtn,.areabtn{margin-bottom:calc(58px + var(--bot))}
 .view{position:absolute;inset:0;bottom:calc(58px + var(--bot));z-index:12;background:var(--bg);display:flex;flex-direction:column}
 .vhead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(14px + var(--top)) 16px 10px;background:#fff;border-bottom:1px solid var(--line)}
 .vhead h2{margin:0;font-size:20px;font-weight:800;letter-spacing:-.02em}
@@ -241,6 +262,7 @@ a{color:inherit;text-decoration:none}
   .tabbar{left:0;right:auto;width:440px}
   .view{left:0;right:auto;width:440px;box-shadow:4px 0 24px rgba(0,0,0,.08)}
   .fab,.locbtn{margin-bottom:0}
+  .areabtn{top:16px;bottom:auto!important;left:calc(440px + (100% - 440px)/2);margin-bottom:0}
   .tab-rank .top,.tab-pick .top,.tab-my .top{display:none}
 }
 </style>
@@ -252,7 +274,7 @@ a{color:inherit;text-decoration:none}
 const SUPABASE_URL  = "https://jcwqolnyzrbosuqlqfjh.supabase.co";
 const SUPABASE_ANON = "sb_publishable_OEnp8Wv8WQD9nm162iVBaw_MOcqnIVo";
 const HOME = {name:"강원랜드 인재개발센터", lat:37.2002, lng:128.8555};
-const APP_VERSION="202611161712"; // 올리기.bat 이 자동으로 갱신
+const APP_VERSION="202611161729"; // 올리기.bat 이 자동으로 갱신
 /* ================================================ */
 const {useState,useEffect,useRef,useMemo,useCallback}=React;
 const CATS={meat:["고기·구이","고기"],rice:["밥·한식","밥"],noodle:["면·분식","면"],cafe:["카페·디저트","카페"],bar:["술·안주","술"],etc:["기타","기타"]};
@@ -313,7 +335,8 @@ async function geocode(q){
     try{const r=await fetch(`https://photon.komoot.io/api/?limit=1&lang=ko&lat=${HOME.lat}&lon=${HOME.lng}&q=${encodeURIComponent(v)}`);const j=await r.json();const f=j.features?.[0];if(f&&f.geometry){const[lng,lat]=f.geometry.coordinates;if(lat>35&&lat<39&&lng>126&&lng<130)return{lat,lng};}}catch{}
     try{const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=kr&q=${encodeURIComponent(v)}`,{headers:{"Accept-Language":"ko"}});const j=await r.json();if(j[0])return{lat:+j[0].lat,lng:+j[0].lon};}catch{}
   }return null;}
-const pinIcon=(cat,sel,avg)=>L.divIcon({className:"",html:`<div class="pin ${sel?"sel":""}" style="background:${COLORS[cat]||COLORS.etc}">${catSvgStr(cat)}${avg?`<b class="badge">${avg.toFixed(1)}</b>`:""}</div>`,iconSize:[sel?38:30,sel?38:30],iconAnchor:[sel?19:15,sel?38:30],popupAnchor:[0,-30]});
+const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pinIcon=(cat,sel,avg,name)=>L.divIcon({className:"",html:`<div class="pw ${sel?"sel":""}"><div class="pin ${sel?"sel":""}" style="background:${COLORS[cat]||COLORS.etc}">${catSvgStr(cat)}${avg?`<b class="badge">${avg.toFixed(1)}</b>`:""}</div>${name?`<span class="lbl">${esc(name)}</span>`:""}</div>`,iconSize:[sel?38:30,sel?38:30],iconAnchor:[sel?19:15,sel?38:30],popupAnchor:[0,-30]});
 
 const I={
   search:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>,
@@ -344,6 +367,9 @@ const SORTS=[["dist","가까운 순"],["rating","별점 높은 순"],["reviews",
 /* ---------- local prefs (기기 저장) ---------- */
 const LS={get:(k,d)=>{try{const v=localStorage.getItem("fm_"+k);return v?JSON.parse(v):d;}catch{return d;}},set:(k,v)=>{try{localStorage.setItem("fm_"+k,JSON.stringify(v));}catch{}}};
 const TAGS=["회식","혼밥","주차","예약필수","아침","야식","포장","가성비","단체룸"];
+/* 평가 키워드 (네이버 '이런 점이 좋았어요' 방식) — DB 구조 변경 없이 한줄평 앞 [ ] 에 저장 */
+const KWS=["맛있어요","양 많아요","가성비 좋아요","친절해요","빨리 나와요","깔끔해요","주차 편해요","웨이팅 있어요","단체 가능","혼밥 가능"];
+const parseRv=c=>{const m=(c||"").match(/^\[([^\]]*)\]\s*/);return m?{kw:m[1].split(",").map(s=>s.trim()).filter(Boolean),text:(c||"").slice(m[0].length)}:{kw:[],text:c||""};};
 const tagsOf=p=>((p.memo||"").match(/#[^\s#]+/g)||[]).map(t=>t.slice(1));
 const memoPlain=p=>memoText(p).replace(/#[^\s#]+/g,"").replace(/\s+/g," ").trim();
 /* 초성 검색 */
@@ -381,6 +407,8 @@ function App(){
   const [sort,setSort]=useState(LS.get("sort","dist"));
   const [active,setActive]=useState(null);const [detail,setDetail]=useState(null);const [form,setForm]=useState(null);
   const [snap,setSnap]=useState("half");
+  const [area,setArea]=useState(null);const [moved,setMoved]=useState(false);
+  const [recent,setRecentS]=useState(LS.get("recent",[]));
   const [toast,setToast]=useState("");const tRef=useRef();
   const say=useCallback(m=>{setToast(m);clearTimeout(tRef.current);tRef.current=setTimeout(()=>setToast(""),1800);},[]);
   const [me,setMeS]=useState(LS.get("me",""));const setMe=v=>{setMeS(v);LS.set("me",v);};
@@ -399,13 +427,13 @@ function App(){
   const enriched=useMemo(()=>places.map(p=>{const rs=stats[p.id]||[];const n=rs.length;const avg=n?rs.reduce((s,r)=>s+r.rating,0)/n:0;return{...p,_n:n,_avg:avg,_d:located(p)?dist(HOME,p):Infinity,_rs:rs,_tags:tagsOf(p),_open:openStatus(p.hours)};}),[places,stats]);
   const list=useMemo(()=>{
     const s=q.trim().toLowerCase();
-    let arr=enriched.filter(p=>(cat==="all"||p.category===cat)&&(!minStar||p._avg>=minStar)&&(!walk||p._d<=1.1)&&(!rated||p._n>0)&&(!openNow||p._open?.k==="open"||p._open?.k==="soon")&&(!tag||p._tags.includes(tag))&&(!s||matchQ([p.name,p.menu,p.memo,p.address,p._rs.map(r=>r.comment).join(" ")].join(" "),s)));
+    let arr=enriched.filter(p=>(cat==="all"||p.category===cat)&&(!minStar||p._avg>=minStar)&&(!walk||p._d<=1.1)&&(!rated||p._n>0)&&(!openNow||p._open?.k==="open"||p._open?.k==="soon")&&(!tag||p._tags.includes(tag))&&(!area||(located(p)&&p.lat>=area.s&&p.lat<=area.n&&p.lng>=area.w&&p.lng<=area.e))&&(!s||matchQ([p.name,p.menu,p.memo,p.address,p._rs.map(r=>r.comment).join(" ")].join(" "),s)));
     const by={dist:(a,b)=>a._d-b._d,rating:(a,b)=>b._avg-a._avg||b._n-a._n||a._d-b._d,reviews:(a,b)=>b._n-a._n||b._avg-a._avg,new:(a,b)=>new Date(b.created_at)-new Date(a.created_at)};
     return arr.sort(by[sort]);
-  },[enriched,q,cat,minStar,walk,rated,openNow,tag,sort]);
+  },[enriched,q,cat,minStar,walk,rated,openNow,tag,sort,area]);
   const activeP=enriched.find(p=>p.id===active);
   const detailP=enriched.find(p=>p.id===detail);
-  const filtersOn=minStar||rated||walk||openNow||tag||cat!=="all"||q;
+  const filtersOn=minStar||rated||walk||openNow||tag||cat!=="all"||q||area;
 
   const mapRef=useRef(null),mapObj=useRef(null),clusterRef=useRef(null);
   useEffect(()=>{
@@ -414,15 +442,19 @@ function App(){
     L.marker([HOME.lat,HOME.lng],{icon:L.divIcon({className:"",html:`<div class="pin home" style="background:#3C1E1E"><svg viewBox="0 0 24 24" fill="none" stroke="#FEE500" stroke-width="2.2" stroke-linecap="round"><path d="M4 21V9l8-6 8 6v12M9 21v-6h6v6"/></svg></div>`,iconSize:[30,30],iconAnchor:[15,15]}),zIndexOffset:1000}).addTo(map).bindPopup(`<b>${HOME.name}</b>`);
     clusterRef.current=L.markerClusterGroup({maxClusterRadius:36,showCoverageOnHover:false});map.addLayer(clusterRef.current);
     map.on("click",()=>setActive(null));
+    const zc=()=>map.getContainer().classList.toggle("zl",map.getZoom()>=15);zc();
+    /* 손가락으로 끌거나 두 손가락으로 확대·축소하면 '이 지역에서 보기' 표시 (자동 이동은 제외) */
+    map.on("zoomend",()=>{zc();if(!map._auto)setMoved(true);});map.on("moveend",()=>{map._auto=false;});
+    map.on("dragend",()=>setMoved(true));
     mapObj.current=map;setTimeout(()=>map.invalidateSize(),100);
     return()=>map.remove();
   },[]);
   useEffect(()=>{const c=clusterRef.current;if(!c)return;c.clearLayers();
-    list.filter(located).forEach(p=>{const m=L.marker([p.lat,p.lng],{icon:pinIcon(p.category,p.id===active,p._avg),zIndexOffset:p.id===active?500:0});m.on("click",()=>{setActive(p.id);setSnap("peek");});c.addLayer(m);});
+    list.filter(located).forEach(p=>{const m=L.marker([p.lat,p.lng],{icon:pinIcon(p.category,p.id===active,p._avg,p.name),zIndexOffset:p.id===active?500:0});m.on("click",()=>{setActive(p.id);setSnap("peek");});c.addLayer(m);});
   },[list,active]);
-  useEffect(()=>{if(activeP&&located(activeP)&&mapObj.current)mapObj.current.flyTo([activeP.lat,activeP.lng],16,{duration:.5});},[active]);
+  useEffect(()=>{if(activeP&&located(activeP)&&mapObj.current){mapObj.current._auto=true;mapObj.current.flyTo([activeP.lat,activeP.lng],16,{duration:.5});}},[active]);
   useEffect(()=>{if(tab==="map")setTimeout(()=>mapObj.current?.invalidateSize(),50);},[tab]);
-  const myLoc=()=>{if(!navigator.geolocation)return say("위치를 지원하지 않는 기기예요");navigator.geolocation.getCurrentPosition(g=>{mapObj.current.flyTo([g.coords.latitude,g.coords.longitude],16);},()=>say("위치 권한을 허용해주세요"));};
+  const myLoc=()=>{if(!navigator.geolocation)return say("위치를 지원하지 않는 기기예요");navigator.geolocation.getCurrentPosition(g=>{mapObj.current._auto=true;mapObj.current.flyTo([g.coords.latitude,g.coords.longitude],16);},()=>say("위치 권한을 허용해주세요"));};
 
   const sheetRef=useRef(null);const drag=useRef(null);
   const vh=window.innerHeight;const heights={peek:150,half:Math.round(vh*0.46),full:vh-150};
@@ -431,7 +463,18 @@ function App(){
   const onUp=()=>{if(!drag.current)return;sheetRef.current.classList.remove("drag");const h=sheetRef.current.offsetHeight;sheetRef.current.style.height="";
     if(!drag.current.moved)setSnap(s=>s==="peek"?"half":s==="half"?"full":"peek");else setSnap(h<heights.peek+80?"peek":h<(heights.half+heights.full)/2?"half":"full");drag.current=null;};
   const sheetH=heights[snap];
-  const openDetail=id=>{setDetail(id);setActive(id);};
+  /* 휴대폰 '뒤로가기'로 상세·등록 화면을 닫음 (사이트를 나가지 않음) */
+  const lvl=()=>(history.state&&history.state.panel)||0;
+  const pushPanel=n=>{try{if(lvl()<n)history.pushState({panel:n},"");}catch{}};
+  useEffect(()=>{const on=e=>{const d=(e.state&&e.state.panel)||0;if(d<2)setForm(null);if(d<1)setDetail(null);};window.addEventListener("popstate",on);return()=>window.removeEventListener("popstate",on);},[]);
+  const closeDetail=()=>{if(lvl()>=1)history.back();else setDetail(null);};
+  const closeForm=()=>{if(lvl()>=2)history.back();else setForm(null);};
+  const openForm=v=>{setForm(v);pushPanel(2);};
+  const openDetail=id=>{setDetail(id);setActive(id);pushPanel(1);setRecentS(r=>{const n=[id,...r.filter(x=>x!==id)].slice(0,10);LS.set("recent",n);return n;});};
+  /* 공유 링크(#장소id)로 들어오면 그 맛집 상세를 바로 엶 */
+  const deepDone=useRef(false);
+  useEffect(()=>{if(deepDone.current||!places.length)return;const h=decodeURIComponent(location.hash.slice(1));if(h&&places.some(p=>String(p.id)===h)){deepDone.current=true;const p=places.find(x=>String(x.id)===h);openDetail(p.id);}else if(places.length)deepDone.current=true;},[places]);
+  const applyArea=()=>{const b=mapObj.current.getBounds();setArea({s:b.getSouth(),n:b.getNorth(),w:b.getWest(),e:b.getEast()});setMoved(false);setSnap(s=>s==="peek"?"half":s);};
   const after=async(msg)=>{await load();if(msg)say(msg);};
   const goMap=p=>{setTab("map");setActive(p.id);setSnap("peek");};
   const cardProps={favs,toggleFav,openDetail};
@@ -454,15 +497,16 @@ function App(){
         <button className={"chip "+(tag||showTags?"on":"")} onClick={()=>setShowTags(v=>!v)}>#{tag||"태그"}</button>
         <button className={"chip "+(rated?"on":"")} onClick={()=>setRated(v=>!v)}>{I.chat}평가 있음</button>
         {Object.entries(CATS).map(([k,[n]])=><button key={k} className={"chip "+(cat===k?"on":"")} onClick={()=>setCat(cat===k?"all":k)} style={cat===k?{background:COLORS[k],borderColor:COLORS[k]}:{}}><CatSvg k={k} style={{color:cat===k?"#fff":COLORS[k]}}/>{n}</button>)}
-        {filtersOn&&<button className="chip reset" onClick={()=>{setMinStar(0);setRated(false);setWalk(false);setOpenNow(false);setTag("");setCat("all");setQ("");}}>{I.x}초기화</button>}
+        {filtersOn&&<button className="chip reset" onClick={()=>{setMinStar(0);setRated(false);setWalk(false);setOpenNow(false);setTag("");setCat("all");setQ("");setArea(null);}}>{I.x}초기화</button>}
       </div>
       {showTags&&<div className="chips tagrow">{TAGS.map(t=><button key={t} className={"chip tg "+(tag===t?"on":"")} onClick={()=>{setTag(tag===t?"":t);}}>#{t}</button>)}</div>}
     </div>
+    {(moved||area)&&<button className={"areabtn "+(area&&!moved?"on":"")} style={{bottom:sheetH+14}} onClick={()=>area&&!moved?setArea(null):applyArea()}>{area&&!moved?<>{I.x}지도 영역 해제</>:<>{I.refresh}이 지역에서 보기</>}</button>}
     <button className="locbtn" style={{bottom:sheetH+14}} onClick={myLoc} aria-label="내 위치">{I.target}</button>
-    <button className="fab" style={{bottom:sheetH+14}} onClick={()=>setForm({})} aria-label="맛집 등록">{I.plus}</button>
+    <button className="fab" style={{bottom:sheetH+14}} onClick={()=>openForm({})} aria-label="맛집 등록">{I.plus}</button>
     <div className="sheet" ref={sheetRef} style={{height:sheetH}}>
       <div className="grab" onTouchStart={onDown} onTouchMove={onMove} onTouchEnd={onUp} onMouseDown={onDown} onMouseMove={e=>e.buttons&&onMove(e)} onMouseUp={onUp} onMouseLeave={onUp}><i/></div>
-      <div className="shead"><span className="sub"><b>{list.length}</b>곳{cat!=="all"?` · ${CATS[cat][0]}`:""}{minStar?` · ★${minStar}+`:""}{walk?" · 도보권":""}{tag?` · #${tag}`:""}</span>
+      <div className="shead"><span className="sub"><b>{list.length}</b>곳{cat!=="all"?` · ${CATS[cat][0]}`:""}{minStar?` · ★${minStar}+`:""}{walk?" · 도보권":""}{tag?` · #${tag}`:""}{area?" · 지도 영역":""}</span>
         <label className="sortsel">{I.sort}{SORTS.find(s=>s[0]===sort)[1]}{I.down}<select value={sort} onChange={e=>setSort(e.target.value)} aria-label="정렬">{SORTS.map(([k,n])=><option key={k} value={k}>{n}</option>)}</select></label></div>
       <div className="list">
         {snap==="peek"&&(activeP?<Card p={activeP} active {...cardProps}/>:<div className="empty" style={{padding:"8px 0"}}>핀을 누르거나 위로 끌어올려 목록 보기</div>)}
@@ -473,12 +517,12 @@ function App(){
     </>}
     {tab==="rank"&&<RankView list={enriched} cat={cat} setCat={setCat} {...cardProps}/>}
     {tab==="pick"&&<PickView list={enriched} {...cardProps} say={say} goMap={goMap}/>}
-    {tab==="my"&&<MyView list={enriched} reviews={reviews} me={me} setMe={setMe} favs={favs} {...cardProps} status={status} after={after}/>}
+    {tab==="my"&&<MyView recent={recent} list={enriched} reviews={reviews} me={me} setMe={setMe} favs={favs} {...cardProps} status={status} after={after}/>}
 
-    <nav className="tabbar">{[["map","지도"],["rank","랭킹"],["pick","뽑기"],["my","MY"]].map(([k,n])=><button key={k} className={tab===k?"on":""} onClick={()=>{setTab(k);setDetail(null);}}>{TabIcon[k]}<span>{n}</span>{k==="my"&&favs.length>0&&<i className="dotn"/>}</button>)}</nav>
+    <nav className="tabbar">{[["map","지도"],["rank","랭킹"],["pick","뽑기"],["my","MY"]].map(([k,n])=><button key={k} className={tab===k?"on":""} onClick={()=>{setTab(k);if(detail)closeDetail();}}>{TabIcon[k]}<span>{n}</span>{k==="my"&&favs.length>0&&<i className="dotn"/>}</button>)}</nav>
 
-    <Detail p={detailP} onClose={()=>setDetail(null)} onEdit={()=>setForm(detailP)} me={me} setMe={setMe} after={after} say={say} fav={favs.includes(detail)} toggleFav={()=>toggleFav(detail)} goMap={goMap}/>
-    <Form init={form} onClose={()=>setForm(null)} me={me} setMe={setMe} after={after} say={say} onSaved={id=>{setForm(null);setDetail(id);setActive(id);}} mapCenter={()=>mapObj.current?.getCenter()}/>
+    <Detail p={detailP} onClose={closeDetail} onEdit={()=>openForm(detailP)} me={me} setMe={setMe} after={after} say={say} fav={favs.includes(detail)} toggleFav={()=>toggleFav(detail)} goMap={goMap}/>
+    <Form init={form} onClose={closeForm} me={me} setMe={setMe} after={after} say={say} onSaved={id=>{try{history.replaceState({panel:1},"");}catch{}setForm(null);setDetail(id);setActive(id);}} mapCenter={()=>mapObj.current?.getCenter()}/>
     <div className={"toast "+(toast?"show":"")}>{toast}</div>
     {newVer&&<button className="upd" onClick={()=>{location.replace(location.pathname+"?v="+newVer);}}>{I.refresh}새 버전이 있어요 · 눌러서 업데이트</button>}
   </div>;
@@ -538,29 +582,34 @@ function PickView({list,say,goMap,...cp}){
   </div>;
 }
 
-function MyView({list,reviews,me,setMe,favs,status,after,...cp}){
+function MyView({recent=[],list,reviews,me,setMe,favs,status,after,...cp}){
   const [nm,setNm]=useState(me);
   const mine=reviews.filter(r=>me&&r.author===me);const favList=list.filter(p=>favs.includes(p.id));
+  const recentList=recent.map(id=>list.find(p=>p.id===id)).filter(Boolean);
   return <div className="view">
     <div className="vhead"><h2>MY</h2><span className="ver">v{APP_VERSION.slice(4,8)}.{APP_VERSION.slice(8)} · {status==="ok"?"공유 중":status==="demo"?"데모":"오프라인"}</span></div>
     <div className="vbody" style={{padding:"0 14px"}}>
       <div className="mycard"><div className="av big">{(me||"?").slice(0,1)}</div><div className="mi"><input value={nm} onChange={e=>setNm(e.target.value)} onBlur={()=>setMe(nm.trim())} placeholder="이름 또는 닉네임" maxLength="20"/><small>평가할 때 이 이름이 자동으로 들어가요</small></div></div>
       <div className="stats"><div><b>{mine.length}</b><span>내 평가</span></div><div><b>{favList.length}</b><span>즐겨찾기</span></div><div><b>{list.length}</b><span>전체 맛집</span></div></div>
+      {recentList.length>0&&<><div className="sect2">최근 본 맛집</div><div className="recent">{recentList.map(p=><button key={p.id} onClick={()=>cp.openDetail(p.id)}><i style={{background:COLORS[p.category]||COLORS.etc}}><CatSvg k={p.category}/></i>{p.name}</button>)}</div></>}
       <div className="sect2">즐겨찾기 ♥</div>
       {favList.length?favList.map(p=><Card key={p.id} p={p} favs={favs} {...cp}/>):<div className="empty" style={{padding:16}}>카드의 하트를 눌러 즐겨찾기를 모아보세요</div>}
       <div className="sect2">내가 남긴 평가</div>
-      {mine.length?mine.map(r=>{const p=list.find(x=>x.id===r.place_id);return p?<div key={r.id} className="myrv" onClick={()=>cp.openDetail(p.id)}><b>{p.name}</b><span className="st">{"★".repeat(r.rating)}</span>{r.comment&&<div className="bb">{r.comment}</div>}<time>{ago(r.created_at)}</time></div>:null;}):<div className="empty" style={{padding:16}}>{me?"아직 남긴 평가가 없어요":"이름을 입력하면 내 평가를 모아볼 수 있어요"}</div>}
+      {mine.length?mine.map(r=>{const p=list.find(x=>x.id===r.place_id);return p?<div key={r.id} className="myrv" onClick={()=>cp.openDetail(p.id)}><b>{p.name}</b><span className="st">{"★".repeat(r.rating)}</span>{parseRv(r.comment).text&&<div className="bb">{parseRv(r.comment).text}</div>}<time>{ago(r.created_at)}</time></div>:null;}):<div className="empty" style={{padding:16}}>{me?"아직 남긴 평가가 없어요":"이름을 입력하면 내 평가를 모아볼 수 있어요"}</div>}
       <button className="btn line" style={{width:"100%",marginTop:12}} onClick={()=>after("새로고침")}>{I.refresh} 데이터 새로고침</button>
     </div>
   </div>;
 }
 
 function Detail({p,onClose,onEdit,me,setMe,after,say,fav,toggleFav,goMap}){
-  const [pick,setPick]=useState(0);const [txt,setTxt]=useState("");const [nm,setNm]=useState(me);const [busy,setBusy]=useState(false);
-  useEffect(()=>{setPick(0);setTxt("");setNm(me);},[p?.id]);
+  const [pick,setPick]=useState(0);const [txt,setTxt]=useState("");const [nm,setNm]=useState(me);const [busy,setBusy]=useState(false);const [kw,setKw]=useState([]);
+  useEffect(()=>{setPick(0);setTxt("");setNm(me);setKw([]);},[p?.id]);
   if(!p)return <div className="panel"/>;
   const cnt=[0,0,0,0,0,0];p._rs.forEach(r=>cnt[r.rating]++);
-  const send=async()=>{if(!pick)return say("별점을 선택해주세요");setBusy(true);try{const a=nm.trim()||"익명";setMe(a);await DB.review({place_id:p.id,author:a,rating:pick,comment:txt.trim()});setPick(0);setTxt("");await after("평가를 남겼어요 👍");}catch(e){say("저장 실패: "+e.message.slice(0,50));}setBusy(false);};
+  const kwc={};p._rs.forEach(r=>parseRv(r.comment).kw.forEach(k=>{kwc[k]=(kwc[k]||0)+1;}));
+  const kwTop=Object.entries(kwc).sort((a,b)=>b[1]-a[1]).slice(0,5);const kwMax=kwTop.length?kwTop[0][1]:1;
+  const toggleKw=k=>setKw(v=>v.includes(k)?v.filter(x=>x!==k):v.length>=3?(say("키워드는 3개까지 고를 수 있어요"),v):[...v,k]);
+  const send=async()=>{if(!pick)return say("별점을 선택해주세요");setBusy(true);try{const a=nm.trim()||"익명";setMe(a);const comment=(kw.length?`[${kw.join(", ")}] `:"")+txt.trim();await DB.review({place_id:p.id,author:a,rating:pick,comment:comment.trim()});setPick(0);setTxt("");setKw([]);await after("평가를 남겼어요 👍");}catch(e){say("저장 실패: "+e.message.slice(0,50));}setBusy(false);};
   const del=async id=>{if(!confirm("이 한줄평을 삭제할까요?"))return;try{await DB.unreview(id);await after("삭제했어요");}catch{say("삭제 실패");}};
   const share=async()=>{const t=`${p.name} · ${p.menu||""}\n${p._n?`★ ${p._avg.toFixed(1)} (${p._n})`:""}\n${location.href.split("#")[0]}#${p.id}`;try{navigator.share?await navigator.share({title:p.name,text:t}):(await navigator.clipboard.writeText(t),say("복사했어요"));}catch{}};
   return <div className="panel open">
@@ -570,6 +619,7 @@ function Detail({p,onClose,onEdit,me,setMe,after,say,fav,toggleFav,goMap}){
       {p._tags.length>0&&<div className="tags" style={{padding:"0 18px 10px"}}>{p._tags.map(t=><span key={t}>#{t}</span>)}</div>}
       <div className="bigrate"><span className="avg">{p._n?p._avg.toFixed(1):"–"}</span><span className="st">{starStr(p._avg)}</span><span className="cnt">평가 {p._n}개</span></div>
       <div className="bars">{[5,4,3,2,1].map(v=><div key={v} className="brow"><span>{v}점</span><div className="tr"><i style={{width:(p._n?cnt[v]/p._n*100:0)+"%"}}/></div><span>{cnt[v]}</span></div>)}</div>
+      {kwTop.length>0&&<div className="kws"><h5>이런 점이 좋았어요</h5>{kwTop.map(([k,n])=><div key={k} className="kw"><i style={{width:(n/kwMax*100)+"%"}}/><span>"{k}"</span><b>{n}</b></div>)}</div>}
       <div className="qa">
         {p.phone&&<a href={"tel:"+p.phone}>{I.phone}전화</a>}
         <a href={located(p)?`https://map.kakao.com/link/to/${encodeURIComponent(p.name)},${p.lat},${p.lng}`:`https://map.kakao.com/link/search/${encodeURIComponent("정선 "+p.name)}`} target="_blank" rel="noopener">{I.nav}길찾기</a>
@@ -585,12 +635,13 @@ function Detail({p,onClose,onEdit,me,setMe,after,say,fav,toggleFav,goMap}){
       <div className="write">
         <h4>내 평가</h4>
         <div className="starpick">{[1,2,3,4,5].map(v=><button key={v} className={v<=pick?"on":""} onClick={()=>setPick(v)} aria-label={v+"점"}>★</button>)}<span className="lab">{RLABEL[pick]||"별을 눌러주세요"}</span></div>
+        <div className="kwpick">{KWS.map(k=><button key={k} type="button" className={kw.includes(k)?"on":""} onClick={()=>toggleKw(k)}>{k}</button>)}</div>
         <textarea rows="2" maxLength="200" placeholder="메뉴, 대기, 팁을 짧게" value={txt} onChange={e=>setTxt(e.target.value)}/>
         <input placeholder="이름 또는 닉네임" maxLength="20" value={nm} onChange={e=>setNm(e.target.value)}/>
         <button className="btn k" disabled={busy} onClick={send}>평가 남기기</button>
       </div>
       <div className="sect">한줄평 <small>{p._n}개</small></div>
-      {p._rs.length?p._rs.map(r=><div key={r.id} className="rv"><div className="av">{(r.author||"익명").slice(0,1)}</div><div className="bd"><div className="nm">{r.author||"익명"}<span className="st">{"★".repeat(r.rating)}</span><time>{ago(r.created_at)}</time></div>{r.comment&&<div className="bb">{r.comment}</div>}{(r.author===me||!me)&&<button className="del" onClick={()=>del(r.id)}>삭제</button>}</div></div>):<div className="empty" style={{padding:20}}>아직 한줄평이 없어요. 첫 평가를 남겨주세요!</div>}
+      {p._rs.length?p._rs.map(r=><div key={r.id} className="rv"><div className="av">{(r.author||"익명").slice(0,1)}</div><div className="bd"><div className="nm">{r.author||"익명"}<span className="st">{"★".repeat(r.rating)}</span><time>{ago(r.created_at)}</time></div>{(()=>{const v=parseRv(r.comment);return <>{v.kw.length>0&&<div className="rvkw">{v.kw.map(k=><span key={k}>{k}</span>)}</div>}{v.text&&<div className="bb">{v.text}</div>}</>;})()}{(r.author===me||!me)&&<button className="del" onClick={()=>del(r.id)}>삭제</button>}</div></div>):<div className="empty" style={{padding:20}}>아직 한줄평이 없어요. 첫 평가를 남겨주세요!</div>}
     </div>
   </div>;
 }
