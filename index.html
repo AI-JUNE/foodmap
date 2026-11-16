@@ -252,7 +252,7 @@ a{color:inherit;text-decoration:none}
 const SUPABASE_URL  = "https://jcwqolnyzrbosuqlqfjh.supabase.co";
 const SUPABASE_ANON = "sb_publishable_OEnp8Wv8WQD9nm162iVBaw_MOcqnIVo";
 const HOME = {name:"강원랜드 인재개발센터", lat:37.2002, lng:128.8555};
-const APP_VERSION="202609101525"; // 올리기.bat 이 자동으로 갱신
+const APP_VERSION="202611161712"; // 올리기.bat 이 자동으로 갱신
 /* ================================================ */
 const {useState,useEffect,useRef,useMemo,useCallback}=React;
 const CATS={meat:["고기·구이","고기"],rice:["밥·한식","밥"],noodle:["면·분식","면"],cafe:["카페·디저트","카페"],bar:["술·안주","술"],etc:["기타","기타"]};
@@ -389,7 +389,10 @@ function App(){
 
   const [newVer,setNewVer]=useState("");
   useEffect(()=>{const chk=async()=>{try{const r=await fetch(location.pathname+"?u="+Date.now(),{cache:"no-store"});const t=await r.text();const m=t.match(/APP_VERSION="(\d+)"/);if(m&&m[1]>APP_VERSION)setNewVer(m[1]);}catch{}};chk();const id=setInterval(chk,5*60*1000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)chk();});return()=>clearInterval(id);},[]);
-  const load=useCallback(async(quiet)=>{try{const{p,r}=await DB.load();setPlaces(p);setReviews(r);setStatus(demo?"demo":"ok");}catch(e){if(!quiet){setStatus("fail");say("DB 연결 실패: "+e.message.slice(0,50));}}},[say]);
+  const load=useCallback(async(quiet)=>{try{const{p,r}=await DB.load();setPlaces(p);setReviews(r);setStatus(demo?"demo":"ok");if(!demo){try{localStorage.setItem("fm_cache",JSON.stringify({p,r,t:Date.now()}));}catch{}}}catch(e){let c=null;try{c=JSON.parse(localStorage.getItem("fm_cache")||"null");}catch{}
+    /* DB가 멈춰도 화면은 비우지 않음: 마지막으로 받은 목록(없으면 기본 목록)을 보여줌 */
+    setPlaces(c&&c.p?c.p:SEED_P.slice());setReviews(c&&c.r?c.r:SEED_R.slice());setStatus("fail");
+    if(!quiet)say(c?"DB 연결 안 됨 · "+new Date(c.t).toLocaleDateString("ko-KR")+" 저장본을 보여줍니다(수정 불가)":"DB 연결 안 됨 · 기본 목록을 보여줍니다(수정 불가)");}},[say]);
   useEffect(()=>{load();const id=setInterval(()=>{if(!document.hidden)load(true);},60*1000);const vis=()=>{if(!document.hidden)load(true);};document.addEventListener("visibilitychange",vis);return()=>{clearInterval(id);document.removeEventListener("visibilitychange",vis);};},[load]);
 
   const stats=useMemo(()=>{const m={};reviews.forEach(r=>{(m[r.place_id]=m[r.place_id]||[]).push(r);});return m;},[reviews]);
